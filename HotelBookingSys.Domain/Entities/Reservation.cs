@@ -1,6 +1,5 @@
 ﻿using HotelBookingSys.Domain.Enums;
 
-
 namespace HotelBookingSys.Domain.Entities;
 
 public class Reservation
@@ -10,8 +9,8 @@ public class Reservation
     public Guid CustomerId { get; private set; }
     public Guid RoomId { get; private set; }
 
-    public DateTime CheckInDate { get; private set; } // TODO: Riittääkö pelkkä Date?
-    public DateTime CheckOutDate { get; private set; } // Riittääkö pelkkä Date
+    public DateOnly CheckInDate { get; private set; } 
+    public DateOnly CheckOutDate { get; private set; } 
 
     public decimal TotalPrice { get; private set; }
     public ReservationStatus Status { get; private set; }
@@ -19,7 +18,7 @@ public class Reservation
     public DateTime? UpdatedAt { get; private set; }
 
     //Constructor
-    public Reservation(Guid customerId, Guid roomId, DateTime checkInDate, DateTime checkOutDate, decimal roomBasePrice)
+    public Reservation(Guid customerId, Guid roomId, DateOnly checkInDate, DateOnly checkOutDate, decimal roomBasePrice)
     {
         // Domain validation
         if (customerId == Guid.Empty)
@@ -47,7 +46,8 @@ public class Reservation
 
     private void CalculateTotalPrice(decimal roomBasePrice)
     {
-        var nights = (CheckOutDate.Date - CheckInDate.Date).Days;
+        // Use DateOnly.DayNumber to compute the difference in days since direct subtraction of DateOnly is not supported.
+        int nights = CheckOutDate.DayNumber - CheckInDate.DayNumber;
         if (nights <= 0)
             throw new InvalidOperationException("Reservation period must be at least 1 night");
 
@@ -69,12 +69,12 @@ public class Reservation
 
             Status = ReservationStatus.Completed;
     }
-    public void UpdateReservation(DateTime newCheckInDate, DateTime newCheckOutDate, decimal roomBasePrice)
+    public void UpdateReservation(DateOnly newCheckInDate, DateOnly newCheckOutDate, decimal roomBasePrice)
     {
         if (Status != ReservationStatus.Active)
             throw new InvalidOperationException("Only active reservations can be updated.");
         
-        if (newCheckInDate.Date >= newCheckOutDate.Date)
+        if (newCheckInDate >= newCheckOutDate)
             throw new ArgumentException("Check-out date must be after check-in date.");
         
         CheckInDate = newCheckInDate;
