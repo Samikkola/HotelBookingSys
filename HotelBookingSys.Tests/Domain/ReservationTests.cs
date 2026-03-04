@@ -103,7 +103,7 @@ public class ReservationTests
         
         // Assert
         act.Should().Throw<ArgumentException>()
-            .WithMessage("*Room base price cannot be negative*");
+            .WithMessage("*Total price cannot be negative*");
     }
 
     [Fact]
