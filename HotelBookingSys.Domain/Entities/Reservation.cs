@@ -7,7 +7,7 @@ public class Reservation
     public Guid Id { get; private set; }
 
     public Guid CustomerId { get; private set; }
-    public int RoomNumber { get; private set; }
+    public Guid RoomId { get; private set; }
 
     public DateOnly CheckInDate { get; private set; } 
     public DateOnly CheckOutDate { get; private set; } 
@@ -18,14 +18,14 @@ public class Reservation
     public DateTime? UpdatedAt { get; private set; }
 
     //Constructor
-    public Reservation(Guid customerId, int roomNumber, DateOnly checkInDate, DateOnly checkOutDate, decimal roomBasePrice)
+    public Reservation(Guid customerId, Guid roomId, DateOnly checkInDate, DateOnly checkOutDate, decimal roomBasePrice)
     {
         // Domain validation
         if (customerId == Guid.Empty)
             throw new ArgumentException("Customer ID is required.", nameof(customerId));
 
-        if (roomNumber <= 0)
-            throw new ArgumentException("Room number is required.", nameof(roomNumber));
+        if (roomId == Guid.Empty)
+            throw new ArgumentException("Room ID is required.", nameof(roomId));
 
         if (checkInDate >= checkOutDate)
             throw new ArgumentException("Check-out date must be after check-in date.");
@@ -35,7 +35,7 @@ public class Reservation
 
         Id = Guid.NewGuid();
         CustomerId = customerId;
-        RoomNumber = roomNumber;
+        RoomId = roomId;
         CheckInDate = checkInDate;
         CheckOutDate = checkOutDate;
         CalculateTotalPrice(roomBasePrice); // Calculate TotalPrice based on room base price and reservation duration
