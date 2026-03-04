@@ -57,8 +57,9 @@ public class Reservation
     public void CancelReservation()
     {
         if (Status != ReservationStatus.Active)
+            
             throw new InvalidOperationException("Reservation is not active and cannot be cancelled.");
-
+        UpdatedAt = DateTime.UtcNow;
         Status = ReservationStatus.Cancelled;
     }
     
@@ -67,7 +68,8 @@ public class Reservation
             if (Status != ReservationStatus.Active)
                 throw new InvalidOperationException("Reservation is not active and cannot be completed.");
 
-            Status = ReservationStatus.Completed;
+        UpdatedAt = DateTime.UtcNow;
+        Status = ReservationStatus.Completed;
     }
     public void UpdateReservation(DateOnly newCheckInDate, DateOnly newCheckOutDate, decimal roomBasePrice)
     {
