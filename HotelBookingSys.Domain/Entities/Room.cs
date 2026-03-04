@@ -23,7 +23,7 @@ public class Room
             throw new ArgumentException("Room number must be greater than zero", nameof(roomNumber));
 
         if (roomCapacity <= 0)
-            throw new ArgumentException("Max persons must be greater than zero", nameof(capacity));
+            throw new ArgumentException("Max persons must be greater than zero", nameof(roomCapacity));
 
         if (basePrice < 0)
             throw new ArgumentException("Base price cannot be negative", nameof(basePrice));
