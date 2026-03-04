@@ -14,7 +14,7 @@ The system will be built using:
 
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
-
+At this stage, the project structure and architectural foundation have been created. Business logic and functionality are not yet implemented, only planned.
 
 ---
 
@@ -90,54 +90,29 @@ This ensures:
 
 ---
 
-✅ Current Status
+# ✅ Current Status
 
 ✔ Solution created
-✔ Clean Architecture structure implemented
+✔ Clean Architecture project structure established
 ✔ Project references configured correctly
-✔ Domain entities implemented
-✔ Business validation inside Domain
-✔ Reservation price calculated inside Domain
-✔ Reservation unit tests written and passing
+✔ Dependency direction verified
 
-🚧 Application use cases not yet implemented
-🚧 Database not yet configured
-🚧 API endpoints not yet implemented
-🚧 Docker configuration not yet added
+🚧 No business logic implemented yet
+🚧 No database configured yet
+🚧 No API endpoints implemented yet
 
 ---
 
-🎯 Next Steps (MVP Roadmap)
+# 🎯 Next Steps (Might change as development progresses)
 
-Add more Domain unit tests?
-
-1. Implement Application layer:
-
-	- CreateReservation use case
-
-	- Repository interfaces
-
-	- ReservationService for overlap validation
-
-2. Configure EF Core with InMemory database
-
-3. Implement Infrastructure repositories
-
-4. Create basic API endpoints:
-
-	- Create Customer
-
-	- Create Room
-
-	- Create Reservation
-
-	- Get Reservations
-
-5. Add reservation overlap validation (business rule)
-
-6. Dockerize the application
-
-7. Extend unit tests to cover Application layer
+1. Implement Domain entities
+2. Define repository interfaces in Application layer
+3. Configure EF Core with InMemory database
+4. Implement basic CRUD functionality
+5. Add reservation overlap validation
+6. Add pricing logic
+7. Add unit tests
+8. Dockerize the application
 
 ---
 
