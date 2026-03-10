@@ -1,6 +1,5 @@
-﻿
-using HotelBookingSys.Domain.Entities;
-namespace HotelBookingSys.Domain.Repositories;
+﻿using HotelBookingSys.Domain.Entities;
+namespace HotelBookingSys.Application.Interfaces;
 
 public interface ICustomerRepository
 {
