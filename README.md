@@ -10,11 +10,12 @@ The system will be built using:
 * **.NET (ASP.NET Core Web API)**
 * **Clean Architecture**
 * **Entity Framework Core**
-* **Docker**
+* **Docker** 
 
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
-At this stage, the project structure and architectural foundation have been created. Business logic and functionality are not yet implemented, only planned.
+
+***At this stage, the project has a working MVP with in-memory storage, basic API endpoints, and dependency injection configured.***
 
 ---
 
@@ -36,7 +37,7 @@ HotelBookingSystem.sln
 
 ---
 
-## Layer Responsibilities (Planned)
+## Layer Responsibilities (planned)
 
 ### 🔹 Domain
 
@@ -47,14 +48,14 @@ HotelBookingSystem.sln
 
 ### 🔹 Application
 
-* Use cases (commands & queries)
+* Use cases 
 * Repository interfaces
 * Service abstractions
 * Depends only on Domain
 
 ### 🔹 Infrastructure
 
-* EF Core implementation
+* EF Core implementation (InMemory in MVP)
 * Database configuration
 * Repository implementations
 * Depends on Application and Domain
@@ -90,29 +91,43 @@ This ensures:
 
 ---
 
-# ✅ Current Status
+✅ Current Status
 
 ✔ Solution created
 ✔ Clean Architecture project structure established
 ✔ Project references configured correctly
 ✔ Dependency direction verified
+✔ Domain entities implemented (Customer, Room, Reservation)
+✔ InMemory database implemented with seeded rooms
+✔ Repository interfaces and InMemory repositories implemented
+✔ Dependency Injection configured for repositories and UseCases
+✔ Basic API endpoints created for Customer and Reservation
+✔ DTOs for creating customers and reservations implemented
+✔ Reservation total price calculation and domain validation implemented
+✔ Reservation tests written
+✔ Swagger integrated and functional
 
-🚧 No business logic implemented yet
-🚧 No database configured yet
-🚧 No API endpoints implemented yet
+🚧 EF Core persistence not yet implemented
+🚧 Docker not yet configured
+🚧 Reservation overlap validation partially implemented
 
 ---
 
 # 🎯 Next Steps (Might change as development progresses)
 
-1. Implement Domain entities
-2. Define repository interfaces in Application layer
-3. Configure EF Core with InMemory database
-4. Implement basic CRUD functionality
-5. Add reservation overlap validation
-6. Add pricing logic
-7. Add unit tests
-8. Dockerize the application
+Implement EF Core database for persistent storage
+
+Complete reservation overlap validation in Application layer
+
+Add additional CRUD operations for rooms and customers
+
+Implement advanced pricing logic (seasonal pricing)
+
+Expand unit test coverage
+
+Dockerize the application
+
+Optionally: add frontend or online booking API
 
 ---
 
@@ -125,12 +140,6 @@ The goal of starting with a clean architectural foundation is to:
 * Prevent framework dependency leakage into the domain
 * Support future extensions (e.g., online booking system)
 
----
-
-*Project is currently in initial setup phase.*
-
-
----
 
 # 👨‍💻 Author
 
