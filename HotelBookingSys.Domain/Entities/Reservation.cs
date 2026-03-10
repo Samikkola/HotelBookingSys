@@ -57,8 +57,8 @@ public class Reservation
     public void CancelReservation()
     {
         if (Status != ReservationStatus.Active)
-            
             throw new InvalidOperationException("Reservation is not active and cannot be cancelled.");
+       
         UpdatedAt = DateTime.UtcNow;
         Status = ReservationStatus.Cancelled;
     }
