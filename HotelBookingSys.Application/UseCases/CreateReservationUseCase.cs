@@ -34,13 +34,11 @@ public class CreateReservationUseCase
         if (room == null)
             throw new ArgumentException("Room not found.", nameof(roomNumber));
 
-        //TODO: Implement in InMemeoryReservationRepository
-
         // Check room availability (overlap)
-        //var overlappingReservations = await _reservationRepository
-        //    .GetOverlappingReservationsAsync(room.Id, checkInDate, checkOutDate);
-        //if (overlappingReservations.Any())
-        //    throw new InvalidOperationException("Room is already booked for the selected dates.");
+        var overlappingReservations = await _reservationRepository
+            .GetOverlappingReservationsAsync(room.Id, checkInDate, checkOutDate);
+        if (overlappingReservations.Any())
+            throw new InvalidOperationException("Room is already booked for the selected dates.");
 
         // Create reservation
         var reservation = new Reservation(customerId, room.Id, checkInDate, checkOutDate, room.BasePrice);
