@@ -94,22 +94,38 @@ This ensures:
 ✅ Current Status
 
 ✔ Solution created
+
 ✔ Clean Architecture project structure established
+
 ✔ Project references configured correctly
+
 ✔ Dependency direction verified
+
 ✔ Domain entities implemented (Customer, Room, Reservation)
+
 ✔ InMemory database implemented with seeded rooms
+
 ✔ Repository interfaces and InMemory repositories implemented
+
 ✔ Dependency Injection configured for repositories and UseCases
+
 ✔ Basic API endpoints created for Customer and Reservation
+
 ✔ DTOs for creating customers and reservations implemented
+
 ✔ Reservation total price calculation and domain validation implemented
+
 ✔ Reservation tests written
+
 ✔ Swagger integrated and functional
 
-🚧 EF Core persistence not yet implemented
-🚧 Docker not yet configured
-🚧 Reservation overlap validation partially implemented
+🚧 To Do
+
+EF Core persistence not yet implemented
+
+Docker not yet configured
+
+Reservation overlap validation partially implemented
 
 ---
 
