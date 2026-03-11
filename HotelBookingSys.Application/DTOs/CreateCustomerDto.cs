@@ -1,6 +1,6 @@
-﻿namespace HotelBookingSys.API.DTOs;
+﻿namespace HotelBookingSys.Application.DTOs;
 
-public class CreateCustomerRequestDto
+public class CreateCustomerDto
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

@@ -1,9 +1,13 @@
-﻿using HotelBookingSys.API.DTOs;
+﻿using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBookingSys.API.Controllers;
 
+
+/// <summary>
+/// Creates a new customer.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CustomersController : ControllerBase
@@ -16,16 +20,10 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCustomer(CreateCustomerRequestDto request)
+    public async Task<ActionResult<CustomerResponseDto>> CreateCustomer([FromBody]CreateCustomerDto request)
     {
-        var customer = await _createCustomerUseCase.ExecuteAsync(
-            request.FirstName,
-            request.LastName,
-            request.Email,
-            request.PhoneNumber,
-            request.Notes
-        );
-
-        return Ok(customer);
+        var result = await _createCustomerUseCase.ExecuteAsync(request);
+          
+        return Ok(result);
     }
 }

@@ -1,9 +1,12 @@
 ﻿using HotelBookingSys.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
-using HotelBookingSys.API.DTOs;
+using HotelBookingSys.Application.DTOs;
 
 namespace HotelBookingSys.API.Controllers;
 
+/// <summary>
+/// Creates a reservation for a specified customer and room within a given date range.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class ReservationsController : ControllerBase
@@ -16,15 +19,9 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateReservationRequestDto request)
+    public async Task<ActionResult<ReservationResponseDto>> CreateReservation([FromBody]CreateReservationDto request)
     {
-        var reservation = await _createReservationUseCase.ExecuteAsync(
-            request.CustomerId,
-            request.RoomNumber,
-            request.CheckInDate,
-            request.CheckOutDate
-        );
-
+        var reservation = await _createReservationUseCase.ExecuteAsync(request);
         return Ok(reservation);
     }
 }

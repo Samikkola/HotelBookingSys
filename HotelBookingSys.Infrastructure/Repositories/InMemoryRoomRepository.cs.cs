@@ -19,6 +19,11 @@ public class InMemoryRoomRepository : IRoomRepository
         return Task.CompletedTask;
     }
 
+    public Task<IEnumerable<Room>> GetAllAsync()
+    {
+        return Task.FromResult<IEnumerable<Room>>(_database.Rooms);
+    }
+
     public Task<Room> GetAvailableRooms(DateTime checkIndate, DateTime checkOutDate)
     {
         throw new NotImplementedException();
@@ -39,4 +44,6 @@ public class InMemoryRoomRepository : IRoomRepository
 
         return Task.FromResult(room);
     }
+
+   
 }

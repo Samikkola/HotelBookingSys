@@ -1,6 +1,6 @@
-﻿namespace HotelBookingSys.API.DTOs;
+﻿namespace HotelBookingSys.Application.DTOs;
 
-public class CreateReservationRequestDto
+public class CreateReservationDto
 {
     public Guid CustomerId { get; set; }
     public int RoomNumber { get; set; }
