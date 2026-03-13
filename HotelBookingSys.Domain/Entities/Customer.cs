@@ -28,7 +28,12 @@ public class Customer
 
         if (string.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email is required.", nameof(email));
-        //TODO: Check email format?
+
+        if (!email.Contains('@'))
+            throw new ArgumentException("Email must be eligible.", nameof(email));
+
+        if (email.Length > 255)
+            throw new ArgumentException("Email must be under 255 characters.", nameof(email));
 
         if (string.IsNullOrWhiteSpace(phoneNumber))
             throw new ArgumentException("Phone number is required.", nameof(phoneNumber));
