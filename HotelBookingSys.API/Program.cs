@@ -15,6 +15,9 @@ builder.Services.AddInfrastructure();
 builder.Services.AddScoped<CreateReservationUseCase>();
 builder.Services.AddScoped<CreateCustomerUseCase>();
 builder.Services.AddScoped<GetAllRoomsUseCase>();
+builder.Services.AddScoped<GetCustomersUseCase>();
+builder.Services.AddScoped<GetReservationsUseCase>();
+builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 
 //Build the app
 var app = builder.Build();

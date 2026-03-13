@@ -12,10 +12,19 @@ namespace HotelBookingSys.API.Controllers;
 public class ReservationsController : ControllerBase
 {
     private readonly CreateReservationUseCase _createReservationUseCase;
+    private readonly GetReservationsUseCase _getReservationsUseCase;
 
-    public ReservationsController(CreateReservationUseCase createReservationUseCase)
+    public ReservationsController(CreateReservationUseCase createReservationUseCase, GetReservationsUseCase getReservationsUseCase)
     {
         _createReservationUseCase = createReservationUseCase;
+        _getReservationsUseCase = getReservationsUseCase;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ReservationResponseDto>>> GetReservations()
+    {
+        var reservations = await _getReservationsUseCase.ExecuteAsync();
+        return Ok(reservations);
     }
 
     [HttpPost]

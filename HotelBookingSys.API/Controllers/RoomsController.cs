@@ -13,10 +13,19 @@ namespace HotelBookingSys.API.Controllers;
 public class RoomsController : ControllerBase
 {
     private readonly GetAllRoomsUseCase _getAllRoomsUseCase;
+    private readonly GetAvailableRoomsUseCase _getAvailableRoomsUseCase;
 
-    public RoomsController(GetAllRoomsUseCase getAllRoomsUseCase)
+    public RoomsController(GetAllRoomsUseCase getAllRoomsUseCase, GetAvailableRoomsUseCase getAvailableRoomsUseCase)
     {
         _getAllRoomsUseCase = getAllRoomsUseCase;
+        _getAvailableRoomsUseCase = getAvailableRoomsUseCase;
+    }
+
+    [HttpGet("available")]
+    public async Task<ActionResult<IEnumerable<RoomResponseDto>>> GetAvailableRooms([FromQuery] DateOnly checkInDate, [FromQuery] DateOnly checkOutDate)
+    {
+        var rooms = await _getAvailableRoomsUseCase.ExecuteAsync(checkInDate, checkOutDate);
+        return Ok(rooms);
     }
 
     [HttpGet]

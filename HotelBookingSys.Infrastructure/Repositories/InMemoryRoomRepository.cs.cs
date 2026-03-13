@@ -24,11 +24,6 @@ public class InMemoryRoomRepository : IRoomRepository
         return Task.FromResult<IEnumerable<Room>>(_database.Rooms);
     }
 
-    public Task<IEnumerable<Room>> GetAvailableRooms(DateOnly checkIndate, DateOnly checkOutDate)
-    {
-        return Task.FromResult<IEnumerable<Room>>(_database.Rooms);
-    }
-
     public Task<Room?> GetByIdAsync(Guid id)
     {
         var room = _database.Rooms

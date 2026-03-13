@@ -22,7 +22,7 @@ public class GetAllRoomsUseCase
 
         return rooms.Select(r => new RoomResponseDto
         {
-            Id = r.Id,
+            
             RoomNumber = r.RoomNumber,
             Type = r.Type.ToString(),
             RoomCapacity = r.RoomCapacity,

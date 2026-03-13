@@ -4,7 +4,7 @@ namespace HotelBookingSys.Application.DTOs;
 
 public class RoomResponseDto
 {
-    public Guid Id { get; set; }
+    // public Guid Id { get; set; } TODO: do I need this ?
 
     public int RoomNumber { get; set; }
 

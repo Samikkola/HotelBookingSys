@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,28 +11,44 @@ namespace HotelBookingSys.Application.UseCases;
 public class GetAvailableRoomsUseCase
 {
     private readonly IRoomRepository _roomRepository;
-
-    public GetAvailableRoomsUseCase(IRoomRepository roomRepository)
+    private readonly IReservationRepository _reservationRepository;
+    
+    public GetAvailableRoomsUseCase(IRoomRepository roomRepository, IReservationRepository reservationRepository)
     {
         _roomRepository = roomRepository;
+        _reservationRepository = reservationRepository;
     }
 
     public async Task<IEnumerable<RoomResponseDto>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
-        if (checkInDate >= checkOutDate)
+        var rooms = await _roomRepository.GetAllAsync();
+        var availableRoomsDto = new List<RoomResponseDto>();
+
+        // Check each room for availability
+        foreach (var room in rooms)
         {
-            throw new ArgumentException("Check-in date must be before check-out date.");
+            var reservations = await _reservationRepository
+                .GetOverlappingReservationsAsync(room.Id, checkInDate, checkOutDate);
+
+            // A room is available if there are no overlapping reservations
+            var isAvailable = !reservations.Any(r =>
+                (checkInDate < r.CheckOutDate && checkOutDate > r.CheckInDate));
+            // If the room is available, map it to dto add it to the list of available rooms
+            if (isAvailable)
+                availableRoomsDto.Add(MapToDto(room));
         }
 
-        var availableRooms = await _roomRepository.GetAvailableRooms(checkInDate, checkOutDate);
+        return availableRoomsDto;
+    }
 
-        return availableRooms.Select(r => new RoomResponseDto
+    private RoomResponseDto MapToDto(Room room)
+    {
+        return new RoomResponseDto
         {
-            Id = r.Id,
-            RoomNumber = r.RoomNumber,
-            Type = r.Type.ToString(),
-            RoomCapacity = r.RoomCapacity,
-            BasePrice = r.BasePrice
-        });
+            RoomNumber = room.RoomNumber,
+            RoomCapacity = room.RoomCapacity,
+            Type = room.Type.ToString(),
+            BasePrice = room.BasePrice,
+        };
     }
 }
