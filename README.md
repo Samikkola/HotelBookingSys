@@ -109,13 +109,17 @@ This ensures:
 
 ✔ Dependency Injection configured for repositories and UseCases
 
-✔ Basic API endpoints created for Customer and Reservation
+✔ API endpoints created for Customer, Room, and Reservation operations (Create/Get)
 
-✔ DTOs for creating customers and reservations implemented
+✔ Use Cases implemented: Create/Get Customers, Create/Get Reservations, Get All/Available Rooms
+
+✔ DTOs implemented for requests and responses (Create/Return Customer, Reservation, Room)
 
 ✔ Reservation total price calculation and domain validation implemented
 
-✔ Reservation tests written
+✔ Reservation overlap validation implemented in Application layer
+
+✔ Reservation domain tests written
 
 ✔ Swagger integrated and functional
 
@@ -125,8 +129,6 @@ EF Core persistence not yet implemented
 
 Docker not yet configured
 
-Reservation overlap validation partially implemented
-
 ---
 
 # 🎯 Next Steps (Might change as development progresses)
@@ -135,7 +137,7 @@ Implement EF Core database for persistent storage
 
 Complete reservation overlap validation in Application layer
 
-Add additional CRUD operations for rooms and customers
+Add remaining CRUD operations (Update/Delete) for rooms, customers, and reservations
 
 Implement advanced pricing logic (seasonal pricing)
 
