@@ -15,6 +15,11 @@ public class InMemoryCustomerRepository : ICustomerRepository
         _database = database;
     }
 
+    public Task<IEnumerable<Customer>> GetAllAsync()
+    {
+        return Task.FromResult<IEnumerable<Customer>>(_database.Customers);
+    }
+
     public Task AddAsync(Customer customer)
     {
         _database.Customers.Add(customer);

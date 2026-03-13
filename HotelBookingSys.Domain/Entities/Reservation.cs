@@ -86,4 +86,5 @@ public class Reservation
     }
 
     //TODO: Seasonal calculation?
+    //TODO: Max occupancy validation?
 }

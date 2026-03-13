@@ -7,6 +7,7 @@ public interface ICustomerRepository
 
     Task<Customer> GetByNameAsync(string firstName, string lastName);
    
+    Task<IEnumerable<Customer>> GetAllAsync();
     Task AddAsync(Customer customer);
     Task UpdateAsync(Customer customer);
     Task DeleteAsync(Guid id);

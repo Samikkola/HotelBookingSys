@@ -13,6 +13,11 @@ public class InMemoryReservationRepository : IReservationRepository
         _database = database;
     }
 
+    public Task<IEnumerable<Reservation>> GetAllAsync()
+    {
+        return Task.FromResult<IEnumerable<Reservation>>(_database.Reservations);
+    }
+
     public Task AddAsync(Reservation reservation)
     {
         _database.Reservations.Add(reservation);

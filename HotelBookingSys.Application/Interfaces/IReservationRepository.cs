@@ -8,5 +8,6 @@ public interface IReservationRepository
     Task AddAsync(Reservation reservation);
     Task UpdateAsync(Reservation reservation);
     Task DeleteAsync(Guid id);
+    Task<IEnumerable<Reservation>> GetAllAsync();
     Task <IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate);
 }
