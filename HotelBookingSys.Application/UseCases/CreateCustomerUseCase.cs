@@ -19,9 +19,7 @@ public class CreateCustomerUseCase
 
         await _customerRepository.AddAsync(customer);
 
-        var responseDto = MapToDto(customer);
-
-        return responseDto;
+        return MapToDto(customer);
     }
 
     private CustomerResponseDto MapToDto(Customer customer)

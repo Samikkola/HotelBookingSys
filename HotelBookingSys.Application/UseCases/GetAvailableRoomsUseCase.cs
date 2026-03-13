@@ -21,24 +21,21 @@ public class GetAvailableRoomsUseCase
 
     public async Task<IEnumerable<RoomResponseDto>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
-        var rooms = await _roomRepository.GetAllAsync();
-        var availableRoomsDto = new List<RoomResponseDto>();
+        // Fetch everything needed concurrently
+        var roomsTask = _roomRepository.GetAllAsync();
+        var reservationsTask = _reservationRepository.GetAllOverlappingReservationsAsync(checkInDate, checkOutDate);
+        // Wait for both tasks to complete
+        await Task.WhenAll(roomsTask, reservationsTask);
+        // Get results from tasks
+        var rooms = roomsTask.Result;
+        var overlappingReservations = reservationsTask.Result;
 
-        // Check each room for availability
-        foreach (var room in rooms)
-        {
-            var reservations = await _reservationRepository
-                .GetOverlappingReservationsAsync(room.Id, checkInDate, checkOutDate);
+        // Filter in-memory using a HashSet of booked Room Ids for O(1) lookups
+        var bookedRoomIds = overlappingReservations.Select(r => r.RoomId).ToHashSet();
 
-            // A room is available if there are no overlapping reservations
-            var isAvailable = !reservations.Any(r =>
-                (checkInDate < r.CheckOutDate && checkOutDate > r.CheckInDate));
-            // If the room is available, map it to dto add it to the list of available rooms
-            if (isAvailable)
-                availableRoomsDto.Add(MapToDto(room));
-        }
-
-        return availableRoomsDto;
+        return rooms
+            .Where(room => !bookedRoomIds.Contains(room.Id))
+            .Select(MapToDto);
     }
 
     private RoomResponseDto MapToDto(Room room)

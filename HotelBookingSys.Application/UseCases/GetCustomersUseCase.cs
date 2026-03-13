@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,14 +20,21 @@ public class GetCustomersUseCase
     {
         var customers = await _customerRepository.GetAllAsync();
 
-        return customers.Select(c => new CustomerResponseDto
+        // Map to dto and return the list of customers
+        return customers.Select(MapToDto).ToList();
+
+    }
+
+    private CustomerResponseDto MapToDto(Customer customer)
+    {
+        return new CustomerResponseDto
         {
-            Id = c.Id,
-            FirstName = c.FirstName,
-            LastName = c.LastName,
-            Email = c.Email,
-            Phone = c.PhoneNumber,
-            Notes = c.Notes?.ToString() ?? string.Empty
-        });
+            Id = customer.Id,
+            FirstName = customer.FirstName,
+            LastName = customer.LastName,
+            Email = customer.Email,
+            Phone = customer.PhoneNumber,
+            Notes = customer.Notes?.ToString() ?? string.Empty
+        };
     }
 }

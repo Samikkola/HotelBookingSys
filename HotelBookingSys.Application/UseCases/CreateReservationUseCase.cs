@@ -38,7 +38,7 @@ public class CreateReservationUseCase
 
         // Check room availability (overlap)
         var overlappingReservations = await _reservationRepository
-            .GetOverlappingReservationsAsync(room.Id, dto.CheckInDate, dto.CheckOutDate);
+            .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate);
         if (overlappingReservations.Any())
             throw new InvalidOperationException("Room is already booked for the selected dates.");
 
@@ -48,9 +48,7 @@ public class CreateReservationUseCase
         await _reservationRepository.AddAsync(reservation);
 
         //Map to DTO and return
-        var responseDto = MapToDto(reservation);
-
-        return responseDto;
+        return MapToDto(reservation);
     }
 
     private Reservation MapToDomain(CreateReservationDto dto , Guid roomId, decimal basePrice)

@@ -34,12 +34,21 @@ public class InMemoryReservationRepository : IReservationRepository
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<Reservation>> GetOverlappingReservationsAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate)
+    public Task<IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate)
     {
         //Gets all reservations for the specified room that overlap with the given check-in and check-out dates.
         var existingReservations = _database.Reservations
             .Where(r => r.RoomId == roomId &&
                         r.CheckInDate < checkOutDate &&
+                        r.CheckOutDate > checkInDate)
+            .ToList();
+        return Task.FromResult<IReadOnlyList<Reservation>>(existingReservations);
+    }
+
+    public Task<IReadOnlyList<Reservation>> GetAllOverlappingReservationsAsync(DateOnly checkInDate, DateOnly checkOutDate)
+    {
+        var existingReservations = _database.Reservations
+            .Where(r => r.CheckInDate < checkOutDate &&
                         r.CheckOutDate > checkInDate)
             .ToList();
         return Task.FromResult<IReadOnlyList<Reservation>>(existingReservations);

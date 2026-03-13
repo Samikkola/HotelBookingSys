@@ -20,13 +20,17 @@ public class GetAllRoomsUseCase
     {
         var rooms = await _roomRepository.GetAllAsync();
 
-        return rooms.Select(r => new RoomResponseDto
+        return rooms.Select(MapToDto).ToList();
+    }
+
+    private RoomResponseDto MapToDto(Room room)
+    {
+        return new RoomResponseDto
         {
-            
-            RoomNumber = r.RoomNumber,
-            Type = r.Type.ToString(),
-            RoomCapacity = r.RoomCapacity,
-            BasePrice = r.BasePrice
-        });
+            RoomNumber = room.RoomNumber,
+            Type = room.Type.ToString(),
+            RoomCapacity = room.RoomCapacity,
+            BasePrice = room.BasePrice
+        };
     }
 }
