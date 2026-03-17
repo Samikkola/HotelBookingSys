@@ -20,6 +20,8 @@ public class GetAllRoomsUseCase
     {
         var rooms = await _roomRepository.GetAllAsync();
 
+        //TODO: Arrange by roomNumber 
+
         return rooms.Select(MapToDto).ToList();
     }
 
