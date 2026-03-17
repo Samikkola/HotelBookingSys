@@ -6,6 +6,7 @@ public class Reservation
 {
     public Guid Id { get; private set; }
 
+    // Foreign keys
     public Guid CustomerId { get; private set; }
     public Guid RoomId { get; private set; }
 
@@ -16,6 +17,16 @@ public class Reservation
     public ReservationStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
+
+    //Navigation properties TODO: Decide if to use these or not
+    // public Customer Customer { get; private set; }
+    // public Room Room { get; private set; }
+
+    //Parametrelles constructor for EF Core
+    private Reservation() 
+    { 
+              
+    }
 
     //Constructor
     public Reservation(Guid customerId, Guid roomId, DateOnly checkInDate, DateOnly checkOutDate, decimal roomBasePrice)

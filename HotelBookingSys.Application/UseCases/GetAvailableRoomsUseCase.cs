@@ -30,9 +30,10 @@ public class GetAvailableRoomsUseCase
         var rooms = roomsTask.Result;
         var overlappingReservations = reservationsTask.Result;
 
-        // Filter in-memory using a HashSet of booked Room Ids for O(1) lookups
+        // Filter using a HashSet of booked Room Ids for O(1) lookups
         var bookedRoomIds = overlappingReservations.Select(r => r.RoomId).ToHashSet();
 
+        // Return rooms that are not in the bookedRoomIds set, and map to DTOs
         return rooms
             .Where(room => !bookedRoomIds.Contains(room.Id))
             .Select(MapToDto);

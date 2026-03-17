@@ -1,9 +1,15 @@
 ﻿using HotelBookingSys.Application.UseCases;
 using HotelBookingSys.Infrastructure;
+using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Add DbContext with SQLite connection string from appsettings.json
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Add contorllers, swagger and infrastructure services
 builder.Services.AddControllers();
