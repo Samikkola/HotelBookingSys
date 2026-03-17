@@ -1,5 +1,6 @@
 ﻿using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
+using HotelBookingSys.Domain.Enums;
 using HotelBookingSys.Infrastructure;
 
 namespace HotelBookingSys.Infrastructure.Repositories;
@@ -26,12 +27,18 @@ public class InMemoryReservationRepository : IReservationRepository
 
     public Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var reservation = _database.Reservations.FirstOrDefault(r => r.Id == id);
+        if (reservation != null)
+        {
+            reservation.CancelReservation(); // Soft delete
+        }
+        return Task.CompletedTask;
     }
 
-    public Task<Reservation> GetByIdAsync(Guid id)
+    public Task<Reservation?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var reservation = _database.Reservations.FirstOrDefault(r => r.Id == id);
+        return Task.FromResult(reservation);
     }
 
     public Task<IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate)
@@ -39,6 +46,7 @@ public class InMemoryReservationRepository : IReservationRepository
         //Gets all reservations for the specified room that overlap with the given check-in and check-out dates.
         var existingReservations = _database.Reservations
             .Where(r => r.RoomId == roomId &&
+                        r.Status == ReservationStatus.Active &&
                         r.CheckInDate < checkOutDate &&
                         r.CheckOutDate > checkInDate)
             .ToList();
@@ -48,7 +56,8 @@ public class InMemoryReservationRepository : IReservationRepository
     public Task<IReadOnlyList<Reservation>> GetAllOverlappingReservationsAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
         var existingReservations = _database.Reservations
-            .Where(r => r.CheckInDate < checkOutDate &&
+            .Where(r => r.Status == ReservationStatus.Active &&
+                        r.CheckInDate < checkOutDate &&
                         r.CheckOutDate > checkInDate)
             .ToList();
         return Task.FromResult<IReadOnlyList<Reservation>>(existingReservations);
@@ -65,7 +74,13 @@ public class InMemoryReservationRepository : IReservationRepository
 
     public Task UpdateAsync(Reservation reservation)
     {
-        throw new NotImplementedException();
+        var existingReservation = _database.Reservations.FirstOrDefault(r => r.Id == reservation.Id);
+        if (existingReservation != null)
+        {
+            _database.Reservations.Remove(existingReservation);
+            _database.Reservations.Add(reservation);
+        }
+        return Task.CompletedTask;
     }
 
 }

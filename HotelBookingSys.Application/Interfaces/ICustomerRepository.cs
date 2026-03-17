@@ -3,7 +3,7 @@ namespace HotelBookingSys.Application.Interfaces;
 
 public interface ICustomerRepository
 {
-    Task<Customer> GetByIdAsync(Guid id);
+    Task<Customer?> GetByIdAsync(Guid id);
 
     Task<Customer> GetByNameAsync(string firstName, string lastName);
    

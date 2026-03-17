@@ -4,7 +4,7 @@ namespace HotelBookingSys.Application.Interfaces;
 
 public interface IReservationRepository
 {
-    Task<Reservation> GetByIdAsync(Guid id);
+    Task<Reservation?> GetByIdAsync(Guid id);
     Task AddAsync(Reservation reservation);
     Task UpdateAsync(Reservation reservation);
     Task DeleteAsync(Guid id);
