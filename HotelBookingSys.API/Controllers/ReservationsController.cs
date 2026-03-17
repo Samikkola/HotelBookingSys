@@ -15,17 +15,20 @@ public class ReservationsController : ControllerBase
     private readonly GetReservationsUseCase _getReservationsUseCase;
     private readonly CancelReservationUseCase _cancelReservationUseCase;
     private readonly UpdateReservationDatesUseCase _updateReservationDatesUseCase;
+    private readonly CompleteReservationUseCase _completeReservationUseCase;
 
     public ReservationsController(
         CreateReservationUseCase createReservationUseCase, 
         GetReservationsUseCase getReservationsUseCase,
         CancelReservationUseCase cancelReservationUseCase,
-        UpdateReservationDatesUseCase updateReservationDatesUseCase)
+        UpdateReservationDatesUseCase updateReservationDatesUseCase,
+        CompleteReservationUseCase completeReservationUseCase)
     {
         _createReservationUseCase = createReservationUseCase;
         _getReservationsUseCase = getReservationsUseCase;
         _cancelReservationUseCase = cancelReservationUseCase;
         _updateReservationDatesUseCase = updateReservationDatesUseCase;
+        _completeReservationUseCase = completeReservationUseCase;
     }
 
     [HttpGet]
@@ -53,6 +56,12 @@ public class ReservationsController : ControllerBase
     public async Task<ActionResult<ReservationResponseDto>> UpdateReservationDates(Guid id, [FromBody] UpdateReservationDatesDto request)
     {
         var result = await _updateReservationDatesUseCase.ExecuteAsync(id, request.NewCheckInDate, request.NewCheckOutDate);
+        return Ok(result);
+    }
+    [HttpPut("{id}/complete")]
+    public async Task<ActionResult<ReservationResponseDto>> CompleteReservation(Guid id)
+    {
+        var result = await _completeReservationUseCase.ExecuteAsync(id);
         return Ok(result);
     }
 }

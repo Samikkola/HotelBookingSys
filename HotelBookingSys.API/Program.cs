@@ -20,6 +20,7 @@ builder.Services.AddScoped<GetReservationsUseCase>();
 builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 builder.Services.AddScoped<CancelReservationUseCase>();
 builder.Services.AddScoped<UpdateReservationDatesUseCase>();
+builder.Services.AddScoped<CompleteReservationUseCase>();
 
 //Build the app
 var app = builder.Build();
