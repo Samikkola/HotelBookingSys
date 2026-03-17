@@ -103,21 +103,21 @@ This ensures:
 
 ✔ Domain entities implemented (Customer, Room, Reservation)
 
-✔ InMemory database implemented with seeded rooms
-
-✔ Repository interfaces and InMemory repositories implemented
+✔ InMemory database implemented (repositories with full CRUD logic)
 
 ✔ Dependency Injection configured for repositories and UseCases
 
-✔ API endpoints created for Customer, Room, and Reservation operations (Create/Get)
+✔ API endpoints created for Customer, Room, and Reservation operations (Create/Get/Update)
 
-✔ Use Cases implemented: Create/Get Customers, Create/Get Reservations, Get All/Available Rooms
+✔ Use Cases implemented: Create/Get Customers, Create/Get/Update/Cancel/Complete Reservations, Get All/Available Rooms
 
-✔ DTOs implemented for requests and responses (Create/Return Customer, Reservation, Room)
+✔ DTOs implemented for requests and responses
 
 ✔ Reservation total price calculation and domain validation implemented
 
-✔ Reservation overlap validation implemented in Application layer
+✔ Reservation overlap validation handling Active bookings only
+
+✔ GitHub Actions CI pipeline configured (.NET Build & Test)
 
 ✔ Reservation domain tests written
 
@@ -129,17 +129,19 @@ EF Core persistence not yet implemented
 
 Docker not yet configured
 
+Error handling pattern (Result Pattern) to be implemented
+
 ---
 
 # 🎯 Next Steps (Might change as development progresses)
 
 Implement EF Core database for persistent storage
 
-Complete reservation overlap validation in Application layer
+Seed standard 30 rooms based on business requirements
 
-Add remaining CRUD operations (Update/Delete) for rooms, customers, and reservations
+Implement Result Pattern for robust error handling
 
-Implement advanced pricing logic (seasonal pricing)
+Implement advanced pricing logic (seasonal pricing, max occupancy validation)
 
 Expand unit test coverage
 
