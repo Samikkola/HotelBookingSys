@@ -15,7 +15,7 @@ The system will be built using:
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
 
-***At this stage, the project has a working MVP with in-memory storage, basic API endpoints, and dependency injection configured.***
+***At this stage, the project has a working MVP with EFCore, SQLite, basic API endpoints, and dependency injection configured.***
 
 ---
 
@@ -103,7 +103,13 @@ This ensures:
 
 ✔ Domain entities implemented (Customer, Room, Reservation)
 
-✔ InMemory database implemented (repositories with full CRUD logic)
+✔ EF Core persistence (SQLite) configured via ApplicationDbContext
+
+✔ EF Core entity models mapped with constraints and relationships
+
+✔ EF Core based repositories implemented for standard core logic
+
+✔ Database seeding configured (creating the required 30 hotel rooms + dummy customer)
 
 ✔ Dependency Injection configured for repositories and UseCases
 
@@ -125,8 +131,6 @@ This ensures:
 
 🚧 To Do
 
-EF Core persistence not yet implemented
-
 Docker not yet configured
 
 Error handling pattern (Result Pattern) to be implemented
@@ -134,10 +138,6 @@ Error handling pattern (Result Pattern) to be implemented
 ---
 
 # 🎯 Next Steps (Might change as development progresses)
-
-Implement EF Core database for persistent storage
-
-Seed standard 30 rooms based on business requirements
 
 Implement Result Pattern for robust error handling
 
