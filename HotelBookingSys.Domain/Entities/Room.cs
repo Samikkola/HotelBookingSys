@@ -35,5 +35,5 @@ public class Room
         BasePrice = basePrice;
     }
 
-    //Update ?
+    //Update, Create ?
 }

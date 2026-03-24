@@ -10,7 +10,7 @@ namespace HotelBookingSys.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class RoomsController : ControllerBase
+public class RoomsController : BaseController
 {
     private readonly GetAllRoomsUseCase _getAllRoomsUseCase;
     private readonly GetAvailableRoomsUseCase _getAvailableRoomsUseCase;
@@ -24,15 +24,15 @@ public class RoomsController : ControllerBase
     [HttpGet("available")]
     public async Task<ActionResult<IEnumerable<RoomResponseDto>>> GetAvailableRooms([FromQuery] DateOnly checkInDate, [FromQuery] DateOnly checkOutDate)
     {
-        var rooms = await _getAvailableRoomsUseCase.ExecuteAsync(checkInDate, checkOutDate);
-        return Ok(rooms);
+        var result = await _getAvailableRoomsUseCase.ExecuteAsync(checkInDate, checkOutDate);
+        return ToActionResult(result);
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RoomResponseDto>>> GetAllRooms()
     {
-        var rooms = await _getAllRoomsUseCase.ExecuteAsync();
-        return Ok(rooms);
+        var result = await _getAllRoomsUseCase.ExecuteAsync();
+        return ToActionResult(result);
     }
 
 

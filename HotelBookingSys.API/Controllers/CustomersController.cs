@@ -10,7 +10,7 @@ namespace HotelBookingSys.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class CustomersController : ControllerBase
+public class CustomersController : BaseController
 {
     private readonly CreateCustomerUseCase _createCustomerUseCase;
     private readonly GetCustomersUseCase _getCustomersUseCase;
@@ -25,14 +25,14 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<IEnumerable<CustomerResponseDto>>> GetCustomers()
     {
         var result = await _getCustomersUseCase.ExecuteAsync();
-        return Ok(result);
+        return ToActionResult(result);
     }
 
     [HttpPost]
     public async Task<ActionResult<CustomerResponseDto>> CreateCustomer([FromBody]CreateCustomerDto request)
     {
         var result = await _createCustomerUseCase.ExecuteAsync(request);
-          
-        return Ok(result);
+
+        return ToActionResult(result);
     }
 }

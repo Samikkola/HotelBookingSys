@@ -1,3 +1,4 @@
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
@@ -19,8 +20,10 @@ public class GetAvailableRoomsUseCase
         _reservationRepository = reservationRepository;
     }
 
-    public async Task<IEnumerable<RoomResponseDto>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
+    public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
+        //TODO: check if dates are given(now returns all rooms if no dates are given) 
+
         // Fetch everything needed concurrently
         var roomsTask = _roomRepository.GetAllAsync();
         var reservationsTask = _reservationRepository.GetAllOverlappingReservationsAsync(checkInDate, checkOutDate);
@@ -34,9 +37,11 @@ public class GetAvailableRoomsUseCase
         var bookedRoomIds = overlappingReservations.Select(r => r.RoomId).ToHashSet();
 
         // Return rooms that are not in the bookedRoomIds set, and map to DTOs
-        return rooms
+        var availableRooms = rooms
             .Where(room => !bookedRoomIds.Contains(room.Id))
             .Select(MapToDto);
+
+        return Result<IEnumerable<RoomResponseDto>>.Success(availableRooms);
     }
 
     private RoomResponseDto MapToDto(Room room)

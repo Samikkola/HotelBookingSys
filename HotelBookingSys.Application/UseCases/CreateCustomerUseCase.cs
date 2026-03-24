@@ -1,6 +1,9 @@
-﻿using HotelBookingSys.Application.DTOs;
+﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace HotelBookingSys.Application.UseCases;
 
@@ -13,13 +16,21 @@ public class CreateCustomerUseCase
         _customerRepository = customerRepository;
     }
 
-    public async Task<CustomerResponseDto> ExecuteAsync(CreateCustomerDto dto)
+    public async Task<Result<CustomerResponseDto>> ExecuteAsync(CreateCustomerDto dto)
     {
-        var customer = MapToDomain(dto);
+        Customer customer;
+        try
+        {
+            customer = MapToDomain(dto);
+        }
+        catch (ArgumentException ex)
+        {
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+        }
 
         await _customerRepository.AddAsync(customer);
 
-        return MapToDto(customer);
+        return Result<CustomerResponseDto>.Success(MapToDto(customer));
     }
 
     private CustomerResponseDto MapToDto(Customer customer)

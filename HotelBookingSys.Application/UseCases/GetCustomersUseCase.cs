@@ -1,3 +1,4 @@
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
@@ -16,12 +17,12 @@ public class GetCustomersUseCase
         _customerRepository = customerRepository;
     }
 
-    public async Task<IEnumerable<CustomerResponseDto>> ExecuteAsync()
+    public async Task<Result<IEnumerable<CustomerResponseDto>>> ExecuteAsync()
     {
         var customers = await _customerRepository.GetAllAsync();
 
         // Map to dto and return the list of customers
-        return customers.Select(MapToDto).ToList();
+        return Result<IEnumerable<CustomerResponseDto>>.Success(customers.Select(MapToDto).ToList());
 
     }
 

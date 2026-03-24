@@ -1,9 +1,10 @@
-﻿using HotelBookingSys.Application.Interfaces;
+﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Application.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelBookingSys.Application.UseCases;
 
@@ -16,13 +17,13 @@ public class GetAllRoomsUseCase
         _roomRepository = roomRepository;
     }
 
-    public async Task<IEnumerable<RoomResponseDto>> ExecuteAsync()
+    public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync()
     {
         var rooms = await _roomRepository.GetAllAsync();
 
         //TODO: Arrange by roomNumber 
 
-        return rooms.Select(MapToDto).ToList();
+        return Result<IEnumerable<RoomResponseDto>>.Success(rooms.Select(MapToDto).ToList());
     }
 
     private RoomResponseDto MapToDto(Room room)

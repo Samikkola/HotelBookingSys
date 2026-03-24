@@ -46,4 +46,8 @@ public class Customer
         Notes = notes;
     }
 
+    //TODO: Add methods for updating customer details, adding notes, etc.
+    //TODO: Add validation on email and phone (no duplicates)
+    //TODO: Add searching customer based on email or phone or name ?
+
 }
