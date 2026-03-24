@@ -1,3 +1,4 @@
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using System;
@@ -17,27 +18,38 @@ public class UpdateReservationDatesUseCase
         _roomRepository = roomRepository;
     }
 
-    public async Task<ReservationResponseDto> ExecuteAsync(Guid reservationId, DateOnly newCheckIn, DateOnly newCheckOut)
+    public async Task<Result<ReservationResponseDto>> ExecuteAsync(Guid reservationId, DateOnly newCheckIn, DateOnly newCheckOut)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId);
         if (reservation == null)
-            throw new ArgumentException($"Reservation with ID {reservationId} not found.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, $"Reservation with ID {reservationId} not found.");
 
         var room = await _roomRepository.GetByIdAsync(reservation.RoomId);
         if (room == null)
-            throw new InvalidOperationException("Associated room not found.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Associated room not found.");
 
         // Check overlapping (excluding the current reservation)
         var overlapping = await _reservationRepository.GetOverlappingReservationsByRoomIdAsync(reservation.RoomId, newCheckIn, newCheckOut);
         if (overlapping.Any(r => r.Id != reservation.Id))
-            throw new InvalidOperationException("Room is not available for the new dates.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is not available for the new dates.");
 
-        // Update domain
-        reservation.UpdateReservation(newCheckIn, newCheckOut, room.BasePrice);
+        
+        try
+        {   // Update domain
+            reservation.UpdateReservation(newCheckIn, newCheckOut, room.BasePrice);
+        }
+        catch (ArgumentException ex)//Catch for domain exceptions
+        {
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+        }
+        catch (InvalidOperationException ex)//Catch for domain exceptions
+        {
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, ex.Message);
+        }
         
         await _reservationRepository.UpdateAsync(reservation);
 
-        return new ReservationResponseDto
+        return Result<ReservationResponseDto>.Success(new ReservationResponseDto
         {
             Id = reservation.Id,
             CustomerId = reservation.CustomerId,
@@ -47,6 +59,6 @@ public class UpdateReservationDatesUseCase
             CheckOutDate = reservation.CheckOutDate,
             TotalPrice = reservation.TotalPrice,
             Status = reservation.Status.ToString()
-        };
+        });
     }
 }

@@ -1,3 +1,4 @@
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using System;
@@ -16,22 +17,29 @@ public class CompleteReservationUseCase
         _roomRepository = roomRepository;
     }
 
-    public async Task<ReservationResponseDto> ExecuteAsync(Guid reservationId)
+    public async Task<Result<ReservationResponseDto>> ExecuteAsync(Guid reservationId)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId);
         
         if (reservation == null)
-            throw new ArgumentException($"Reservation with ID {reservationId} not found.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, $"Reservation with ID {reservationId} not found.");
 
         //Get roomnumber for the response dto
         var room = await _roomRepository.GetByIdAsync(reservation.RoomId);
         if (room == null)
-            throw new InvalidOperationException("Associated room not found.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Associated room not found.");
 
-        reservation.CompleteReservation();
+        try
+        {
+            reservation.CompleteReservation();
+        }
+        catch (InvalidOperationException ex)//Catch for domain exceptions
+        {
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, ex.Message);
+        }
         await _reservationRepository.UpdateAsync(reservation);
 
-        return new ReservationResponseDto
+        return Result<ReservationResponseDto>.Success(new ReservationResponseDto
         {
             Id = reservation.Id,
             CustomerId = reservation.CustomerId,
@@ -41,6 +49,6 @@ public class CompleteReservationUseCase
             CheckOutDate = reservation.CheckOutDate,
             TotalPrice = reservation.TotalPrice,
             Status = reservation.Status.ToString()
-        };
+        });
     }
 }

@@ -1,3 +1,4 @@
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
@@ -18,7 +19,7 @@ public class GetReservationsUseCase
         _roomRepository = roomRepository;
     }
 
-    public async Task<IEnumerable<ReservationResponseDto>> ExecuteAsync()
+    public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync()
     {
         // Fetch reservations and rooms in parallel to optimize performance
         var reservationsTask = _reservationRepository.GetAllAsync();
@@ -31,7 +32,7 @@ public class GetReservationsUseCase
         var rooms = roomsTask.Result.ToDictionary(r => r.Id, r => r.RoomNumber);
 
         // Map reservations to DTOs, including room numbers
-        return reservations.Select(r => MapToDto(r, rooms));
+        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, rooms)));
 
     }
 

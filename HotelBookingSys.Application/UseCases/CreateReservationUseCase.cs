@@ -1,8 +1,10 @@
-
-
+using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelBookingSys.Application.UseCases;
 
@@ -23,32 +25,44 @@ public class CreateReservationUseCase
     }
 
 
-    public async Task<ReservationResponseDto> ExecuteAsync(CreateReservationDto dto)
+    public async Task<Result<ReservationResponseDto>> ExecuteAsync(CreateReservationDto dto)
     {
         
         // Validate customer and room existence
         var customer = await _customerRepository.GetByIdAsync(dto.CustomerId);
         if (customer == null)
-            throw new ArgumentException("Customer not found.", nameof(dto.CustomerId));
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Customer not found.");
 
         //Maps roomNumber (int) to roomId (Guid)
         var room = await _roomRepository.GetByRoomNumberAsync(dto.RoomNumber);
         if (room == null)
-            throw new ArgumentException("Room not found.", nameof(dto.RoomNumber));
+            return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Room not found.");
 
         // Check room availability (overlap)
         var overlappingReservations = await _reservationRepository
             .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate);
         if (overlappingReservations.Any())
-            throw new InvalidOperationException("Room is already booked for the selected dates.");
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is already booked for the selected dates.");
 
-        //Create resvervation with correct RoomId and Baseprice
-        var reservation = MapToDomain(dto, room.Id, room.BasePrice);
+        //Create reservation with correct RoomId and Baseprice
+        Reservation reservation;
+        try
+        {
+            reservation = MapToDomain(dto, room.Id, room.BasePrice);
+        }
+        catch (ArgumentException ex)//Catch for domain exceptions
+        {
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+        }
+        catch (InvalidOperationException ex)//Catch for domain exceptions
+        {
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+        }
         // Save reservation
         await _reservationRepository.AddAsync(reservation);
 
         //Map to DTO and return
-        return MapToDto(reservation);
+        return Result<ReservationResponseDto>.Success(MapToDto(reservation, room.RoomNumber));
     }
 
     private Reservation MapToDomain(CreateReservationDto dto , Guid roomId, decimal basePrice)
@@ -56,17 +70,14 @@ public class CreateReservationUseCase
         return new Reservation(dto.CustomerId, roomId , dto.CheckInDate, dto.CheckOutDate, basePrice); // TotalPrice will be set in domain
     }
 
-    private ReservationResponseDto MapToDto(Reservation reservation)
+    private static ReservationResponseDto MapToDto(Reservation reservation, int roomNumber)
     {
-        //Gets teh room to get RoomNumber
-        var room = _roomRepository.GetByIdAsync(reservation.RoomId).Result;
-
         return new ReservationResponseDto
         {
             Id = reservation.Id,
             CustomerId = reservation.CustomerId,
             RoomId = reservation.RoomId,
-            RoomNumber = room?.RoomNumber ?? 0, // Fallback to 0 if room is not found
+            RoomNumber = roomNumber,
             CheckInDate = reservation.CheckInDate,
             CheckOutDate = reservation.CheckOutDate,
             TotalPrice = reservation.TotalPrice,
