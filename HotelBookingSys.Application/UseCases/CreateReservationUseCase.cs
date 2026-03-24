@@ -44,6 +44,8 @@ public class CreateReservationUseCase
         if (overlappingReservations.Any())
             return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is already booked for the selected dates.");
 
+        //TODO: Add date validation -> only future dates accepted
+
         //Create reservation with correct RoomId and Baseprice
         Reservation reservation;
         try

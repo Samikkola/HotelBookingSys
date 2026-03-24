@@ -33,7 +33,8 @@ public class UpdateReservationDatesUseCase
         if (overlapping.Any(r => r.Id != reservation.Id))
             return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is not available for the new dates.");
 
-        
+        //TODO: Add date validation -> only future dates accepted
+
         try
         {   // Update domain
             reservation.UpdateReservation(newCheckIn, newCheckOut, room.BasePrice);

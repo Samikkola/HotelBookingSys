@@ -6,48 +6,41 @@ namespace HotelBookingSys.Tests.Domain;
 
 public class ReservationTests
 {
-    //TODO: Refactor tests to use ValidReservation object?
+    private static readonly Guid CustomerId = Guid.NewGuid();
+    private static readonly Guid RoomId = Guid.NewGuid();
+    private static readonly DateOnly BaseCheckIn = new(2026, 2, 10);
+    private static readonly DateOnly BaseCheckOut = new(2026, 2, 14);
+    private const decimal BasePrice = 100m;
 
-
+    private Reservation ValidReservation => new(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, BasePrice);
 
     [Fact]
     public void Constructor_WithValidData_ShouldCreateReservation()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-
-        // Act
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        var reservation = ValidReservation;
 
         // Assert
         reservation.Should().NotBeNull();
-        reservation.CustomerId.Should().Be(customerId);
-        reservation.RoomId.Should().Be(roomId);
-        reservation.CheckInDate.Should().Be(checkInDate);
-        reservation.CheckOutDate.Should().Be(checkOutDate);
+        reservation.CustomerId.Should().Be(CustomerId);
+        reservation.RoomId.Should().Be(RoomId);
+        reservation.CheckInDate.Should().Be(BaseCheckIn);
+        reservation.CheckOutDate.Should().Be(BaseCheckOut);
         reservation.TotalPrice.Should().Be(400m); // 4 nights * 100 per night
         reservation.Status.Should().Be(ReservationStatus.Active);
-        reservation.CreatedAt
-            .Should()
-            .BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
+        reservation.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
     }
 
     [Fact]
     public void Constructor_WithInvalidDates_ShouldThrowArgumentException()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        decimal roomBasePrice = 100m;
+        // Swap the dates to create a invalid scenario
+        DateOnly checkInDate = BaseCheckOut;
+        DateOnly checkOutDate = BaseCheckIn;
 
         // Act
-        Action act = () => new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Action act = () => new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -57,14 +50,9 @@ public class ReservationTests
     [Fact]
     public void Constructor_WithEmptyCustomerId_ShouldThrowArgumentException()
     {
-        // Arrange
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-        
+       
         // Act
-        Action act = () => new Reservation(Guid.Empty, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Action act = () => new Reservation(Guid.Empty, RoomId, BaseCheckIn, BaseCheckOut, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -74,14 +62,9 @@ public class ReservationTests
     [Fact]
     public void Constructor_WithEmptyRoomId_ShouldThrowArgumentException()
     {
-        // Arrange
-        Guid customerId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-        
+              
         // Act
-        Action act = () => new Reservation(customerId, Guid.Empty, checkInDate, checkOutDate, roomBasePrice);
+        Action act = () => new Reservation(CustomerId, Guid.Empty, BaseCheckIn, BaseCheckOut, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -91,15 +74,9 @@ public class ReservationTests
     [Fact]
     public void Constructor_WithNegativeRoomBasePrice_ShouldThrowArgumentException()
     {
-        // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = -100m;
-        
+             
         // Act
-        Action act = () => new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, -100m);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -109,15 +86,11 @@ public class ReservationTests
     [Fact]
     public void Constructor_WithOneNight_ShouldCalculateCorrectly()
     {
-        //Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(2));
-        decimal roomBasePrice = 100m;
+        //Arrange    
+        DateOnly checkOutDate = BaseCheckIn.AddDays(1);
 
         //Act
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = new Reservation(CustomerId, RoomId, BaseCheckIn, checkOutDate, BasePrice);
 
         //Assert
         reservation.Should().NotBeNull();
@@ -125,20 +98,12 @@ public class ReservationTests
 
     }
 
-    //Is this test necessary? It is already tested in the constructor test, but it is good to have a separate test for the price calculation logic as well.
-    [Fact]
+    [Fact] // Maybe futile test? 
     public void CalculateTotalPrice_ShouldCalculateCorrectly()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-
-        // Act
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
-
+        Reservation reservation = ValidReservation;
+      
         // Assert
         reservation.TotalPrice.Should().Be(400m); // 4 nights * 100 per night
     }
@@ -147,13 +112,7 @@ public class ReservationTests
     public void CancelReservation_WhenActive_ShouldSetStatusToCancelled()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-       
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         
         // Act        
         reservation.CancelReservation();
@@ -171,13 +130,7 @@ public class ReservationTests
     public void CancelReservation_WhenNotActive_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-       
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         reservation.CancelReservation(); // First cancel to set status to Cancelled
         
         // Act
@@ -192,13 +145,7 @@ public class ReservationTests
     public void CompleteReservation_ShouldSetStatusToCompleted()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
-        decimal roomBasePrice = 100m;
-       
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         
         // Act        
         reservation.CompleteReservation();
@@ -215,13 +162,7 @@ public class ReservationTests
     public void CompleteReservation_WhenNotActive_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
-        decimal roomBasePrice = 100m;
-       
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         reservation.CancelReservation(); // First cancel to set status to Cancelled
         
         // Act
@@ -236,18 +177,12 @@ public class ReservationTests
     public void UpdateReservation_WhenActive_ShouldUpdateDetails()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         var originalId = reservation.Id;
 
         // Act
-        DateOnly newCheckInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(2));
-        DateOnly newCheckOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(6));
+        DateOnly newCheckInDate = BaseCheckIn.AddDays(1);
+        DateOnly newCheckOutDate = BaseCheckOut.AddDays(1);
         decimal newRoomBasePrice = 120m;
         
         reservation.UpdateReservation(newCheckInDate, newCheckOutDate, newRoomBasePrice);
@@ -268,17 +203,11 @@ public class ReservationTests
     public void UpdateReservation_WhenNotActive_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         reservation.CancelReservation(); // First cancel to set status to Cancelled
 
         // Act
-        Action act = () => reservation.UpdateReservation(checkInDate,checkOutDate, roomBasePrice);
+        Action act = () => reservation.UpdateReservation(BaseCheckIn, BaseCheckOut, BasePrice);
 
         //Assert
         act.Should().Throw<InvalidOperationException>()
@@ -289,21 +218,57 @@ public class ReservationTests
     public void UpdateReservation_WithInvalidDates_ShouldThrowArgumentException()
     {
         // Arrange
-        Guid customerId = Guid.NewGuid();
-        Guid roomId = Guid.NewGuid();
-        DateOnly checkInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
-        DateOnly checkOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        decimal roomBasePrice = 100m;
-        Reservation reservation = new Reservation(customerId, roomId, checkInDate, checkOutDate, roomBasePrice);
+        Reservation reservation = ValidReservation;
         
         // Act
-        DateOnly newCheckInDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
-        DateOnly newCheckOutDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+        // Swap dates to get invalid scenario
+        DateOnly newCheckInDate = BaseCheckOut;
+        DateOnly newCheckOutDate = BaseCheckIn;
         
-        Action act = () => reservation.UpdateReservation(newCheckInDate, newCheckOutDate, roomBasePrice);
+        Action act = () => reservation.UpdateReservation(newCheckInDate, newCheckOutDate, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
             .WithMessage("*Check-out date must be after check-in date*");
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_ShouldApplySummerPricing()
+    {
+        var checkInDate = new DateOnly(2026, 6, 1);
+        var checkOutDate = new DateOnly(2026, 6, 3);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+
+        reservation.TotalPrice.Should().Be(260m); // 2 nights * 100 * 1.3
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_ShouldApplyChristmasPricing()
+    {
+        var checkInDate = new DateOnly(2026, 12, 20);
+        var checkOutDate = new DateOnly(2026, 12, 22);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+
+        reservation.TotalPrice.Should().Be(260m); // 2 nights * 100 * 1.3
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_ShouldApplyMixedSeasonPricing()
+    {
+        var checkInDate = new DateOnly(2026, 8, 31);
+        var checkOutDate = new DateOnly(2026, 9, 2);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+
+        reservation.TotalPrice.Should().Be(230m); // 1 seasonal + 1 normal
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_ShouldPreserveDecimalPrecision()
+    {
+        var checkInDate = new DateOnly(2026, 6, 1);
+        var checkOutDate = new DateOnly(2026, 6, 2);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, 99.99m);
+
+        reservation.TotalPrice.Should().Be(129.987m);
     }
 }
