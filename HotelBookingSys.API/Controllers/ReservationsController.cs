@@ -44,6 +44,9 @@ public class ReservationsController : BaseController
     public async Task<ActionResult<ReservationResponseDto>> CreateReservation([FromBody]CreateReservationDto request)
     {
         var result = await _createReservationUseCase.ExecuteAsync(request);
+        if (result.IsSuccess)
+            return CreatedAtAction(nameof(GetReservations), result.Value);
+
         return ToActionResult(result);
     }
 

@@ -33,6 +33,9 @@ public class CustomersController : BaseController
     {
         var result = await _createCustomerUseCase.ExecuteAsync(request);
 
+        if (result.IsSuccess)
+            return CreatedAtAction(nameof(GetCustomers), result.Value);
+
         return ToActionResult(result);
     }
 }

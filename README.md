@@ -15,7 +15,7 @@ The system will be built using:
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
 
-***At this stage, the project has a working MVP with EFCore, SQLite, basic API endpoints, and dependency injection configured.***
+***At this stage, the project has a working MVP with EFCore, SQLite, Result Pattern-based error handling, and dependency injection configured.***
 
 ---
 
@@ -26,13 +26,13 @@ The solution follows **Clean Architecture principles**, where dependencies point
 ## Solution Structure
 
 ```
-HotelBookingSystem.sln
+HotelBookingSys.slnx
 
- ├── HotelBooking.Domain
- ├── HotelBooking.Application
- ├── HotelBooking.Infrastructure
- ├── HotelBooking.API
- └── HotelBooking.Tests
+ ├── HotelBookingSys.Domain
+ ├── HotelBookingSys.Application
+ ├── HotelBookingSys.Infrastructure
+ ├── HotelBookingSys.API
+ └── HotelBookingSys.Tests
 ```
 
 ---
@@ -119,7 +119,9 @@ This ensures:
 
 ✔ DTOs implemented for requests and responses
 
-✔ Reservation total price calculation and domain validation implemented
+✔ Result Pattern implemented with HTTP status mapping in controllers
+
+✔ Reservation total price calculation, seasonal pricing logic and domain validation implemented
 
 ✔ Reservation overlap validation handling Active bookings only
 
@@ -133,15 +135,15 @@ This ensures:
 
 Docker not yet configured
 
-Error handling pattern (Result Pattern) to be implemented
+Add endpoint to fetch reservation/customer by ID (for CreatedAtAction)
 
 ---
 
 # 🎯 Next Steps (Might change as development progresses)
 
-Implement Result Pattern for robust error handling
+Expand Result Pattern usage and refine error messages
 
-Implement advanced pricing logic (seasonal pricing, max occupancy validation)
+Implement max occupancy validation
 
 Expand unit test coverage
 
