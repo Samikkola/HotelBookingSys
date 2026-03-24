@@ -55,14 +55,40 @@ public class Reservation
        
     }
 
+    /// <summary>
+    /// Calculates total price of the reservation and adds seasonal pricing
+    /// </summary>
+    /// <param name="roomBasePrice"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     private void CalculateTotalPrice(decimal roomBasePrice)
     {
-        // Use DateOnly.DayNumber to compute the difference in days since direct subtraction of DateOnly is not supported.
         int nights = CheckOutDate.DayNumber - CheckInDate.DayNumber;
         if (nights <= 0)
             throw new InvalidOperationException("Reservation period must be at least 1 night");
 
-        TotalPrice = nights * roomBasePrice;
+        decimal total = 0m;
+        var currentDate = CheckInDate;
+
+        // Loop through each night of the reservation to apply seasonal pricing
+        for (int i = 0; i < nights; i++)
+        {
+            decimal nightPrice = roomBasePrice;
+
+            //Dates for seasonal pricing
+            bool isSummer = currentDate.Month >= 6 && currentDate.Month <= 8;
+            bool isChristmas = (currentDate.Month == 12 && currentDate.Day >= 20) ||
+                               (currentDate.Month == 1 && currentDate.Day <= 6);
+
+            if (isSummer || isChristmas)
+            {
+                nightPrice *= 1.3m;
+            }
+
+            total += nightPrice;
+            currentDate = currentDate.AddDays(1);
+        }
+
+        TotalPrice = total;
     }
 
     public void CancelReservation()
@@ -96,6 +122,6 @@ public class Reservation
         CalculateTotalPrice(roomBasePrice); // Recalculate total price based on new dates
     }
 
-    //TODO: Seasonal calculation?
+    
     //TODO: Max occupancy validation?
 }
