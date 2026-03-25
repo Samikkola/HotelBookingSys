@@ -40,7 +40,8 @@ public class CreateReservationUseCase
      
         // Check room availability (overlap)
         var overlappingReservations = await _reservationRepository
-            .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate);
+            .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate)
+            ?? Array.Empty<Reservation>();
         if (overlappingReservations.Any())
             return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is already booked for the selected dates.");
 
