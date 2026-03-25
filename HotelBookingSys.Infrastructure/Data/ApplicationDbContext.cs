@@ -55,6 +55,7 @@ public class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CheckInDate).IsRequired();
             entity.Property(e => e.CheckOutDate).IsRequired();
+            entity.Property(e => e.NumberOfGuests).IsRequired();
             entity.Property(e => e.TotalPrice).IsRequired().HasColumnType("decimal(18,2)");
             entity.Property(e => e.Status).HasConversion<string>().IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();

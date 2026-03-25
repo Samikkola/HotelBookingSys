@@ -47,6 +47,7 @@ public class CompleteReservationUseCase
             RoomNumber = room.RoomNumber,
             CheckInDate = reservation.CheckInDate,
             CheckOutDate = reservation.CheckOutDate,
+            NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
             Status = reservation.Status.ToString()
         });

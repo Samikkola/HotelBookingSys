@@ -33,11 +33,11 @@ public class CreateReservationUseCase
         if (customer == null)
             return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Customer not found.");
 
-        //Maps roomNumber (int) to roomId (Guid)
+        //Gets the room details for the reservation creation
         var room = await _roomRepository.GetByRoomNumberAsync(dto.RoomNumber);
         if (room == null)
             return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Room not found.");
-
+     
         // Check room availability (overlap)
         var overlappingReservations = await _reservationRepository
             .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate);
@@ -50,7 +50,7 @@ public class CreateReservationUseCase
         Reservation reservation;
         try
         {
-            reservation = MapToDomain(dto, room.Id, room.BasePrice);
+            reservation = MapToDomain(dto, room.Id, room.RoomCapacity, room.BasePrice);
         }
         catch (ArgumentException ex)//Catch for domain exceptions
         {
@@ -67,9 +67,9 @@ public class CreateReservationUseCase
         return Result<ReservationResponseDto>.Success(MapToDto(reservation, room.RoomNumber));
     }
 
-    private Reservation MapToDomain(CreateReservationDto dto , Guid roomId, decimal basePrice)
+    private Reservation MapToDomain(CreateReservationDto dto , Guid roomId, int roomCapacity, decimal basePrice)
     {
-        return new Reservation(dto.CustomerId, roomId , dto.CheckInDate, dto.CheckOutDate, basePrice); // TotalPrice will be set in domain
+        return new Reservation(dto.CustomerId, roomId , dto.CheckInDate, dto.CheckOutDate, dto.NumberOfGuests, roomCapacity, basePrice); // TotalPrice will be set in domain
     }
 
     private static ReservationResponseDto MapToDto(Reservation reservation, int roomNumber)
@@ -82,6 +82,7 @@ public class CreateReservationUseCase
             RoomNumber = roomNumber,
             CheckInDate = reservation.CheckInDate,
             CheckOutDate = reservation.CheckOutDate,
+            NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
             Status = reservation.Status.ToString() ?? string.Empty
         };

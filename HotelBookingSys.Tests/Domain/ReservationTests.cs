@@ -10,9 +10,11 @@ public class ReservationTests
     private static readonly Guid RoomId = Guid.NewGuid();
     private static readonly DateOnly BaseCheckIn = new(2026, 2, 10);
     private static readonly DateOnly BaseCheckOut = new(2026, 2, 14);
+    private const int RoomCapacity = 2;
+    private const int NumberOfGuests = 2;
     private const decimal BasePrice = 100m;
 
-    private Reservation ValidReservation => new(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, BasePrice);
+    private Reservation ValidReservation => new(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, NumberOfGuests, RoomCapacity, BasePrice);
 
     [Fact]
     public void Constructor_WithValidData_ShouldCreateReservation()
@@ -32,6 +34,17 @@ public class ReservationTests
     }
 
     [Fact]
+    public void Constructor_WithTooManyGuests_ShouldThrowArgumentException()
+    {
+        // Act
+        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, RoomCapacity + 1, RoomCapacity, BasePrice);
+
+        // Assert
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("*Number of guests exceeds room capacity*");
+    }
+
+    [Fact]
     public void Constructor_WithInvalidDates_ShouldThrowArgumentException()
     {
         // Arrange
@@ -40,7 +53,7 @@ public class ReservationTests
         DateOnly checkOutDate = BaseCheckIn;
 
         // Act
-        Action act = () => new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+        Action act = () => new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, NumberOfGuests, RoomCapacity, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -52,7 +65,7 @@ public class ReservationTests
     {
        
         // Act
-        Action act = () => new Reservation(Guid.Empty, RoomId, BaseCheckIn, BaseCheckOut, BasePrice);
+        Action act = () => new Reservation(Guid.Empty, RoomId, BaseCheckIn, BaseCheckOut, NumberOfGuests, RoomCapacity, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -64,7 +77,7 @@ public class ReservationTests
     {
               
         // Act
-        Action act = () => new Reservation(CustomerId, Guid.Empty, BaseCheckIn, BaseCheckOut, BasePrice);
+        Action act = () => new Reservation(CustomerId, Guid.Empty, BaseCheckIn, BaseCheckOut, NumberOfGuests, RoomCapacity, BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -76,7 +89,7 @@ public class ReservationTests
     {
              
         // Act
-        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, -100m);
+        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, NumberOfGuests, RoomCapacity, -100m);
         
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -90,7 +103,7 @@ public class ReservationTests
         DateOnly checkOutDate = BaseCheckIn.AddDays(1);
 
         //Act
-        Reservation reservation = new Reservation(CustomerId, RoomId, BaseCheckIn, checkOutDate, BasePrice);
+        Reservation reservation = new Reservation(CustomerId, RoomId, BaseCheckIn, checkOutDate, NumberOfGuests, RoomCapacity, BasePrice);
 
         //Assert
         reservation.Should().NotBeNull();
@@ -237,7 +250,7 @@ public class ReservationTests
     {
         var checkInDate = new DateOnly(2026, 6, 1);
         var checkOutDate = new DateOnly(2026, 6, 3);
-        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, NumberOfGuests,RoomCapacity, BasePrice);
 
         reservation.TotalPrice.Should().Be(260m); // 2 nights * 100 * 1.3
     }
@@ -247,7 +260,7 @@ public class ReservationTests
     {
         var checkInDate = new DateOnly(2026, 12, 20);
         var checkOutDate = new DateOnly(2026, 12, 22);
-        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, NumberOfGuests, RoomCapacity, BasePrice);
 
         reservation.TotalPrice.Should().Be(260m); // 2 nights * 100 * 1.3
     }
@@ -257,7 +270,7 @@ public class ReservationTests
     {
         var checkInDate = new DateOnly(2026, 8, 31);
         var checkOutDate = new DateOnly(2026, 9, 2);
-        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, BasePrice);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, NumberOfGuests, RoomCapacity, BasePrice);
 
         reservation.TotalPrice.Should().Be(230m); // 1 seasonal + 1 normal
     }
@@ -267,7 +280,7 @@ public class ReservationTests
     {
         var checkInDate = new DateOnly(2026, 6, 1);
         var checkOutDate = new DateOnly(2026, 6, 2);
-        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, 99.99m);
+        var reservation = new Reservation(CustomerId, RoomId, checkInDate, checkOutDate, NumberOfGuests, RoomCapacity, 99.99m);
 
         reservation.TotalPrice.Should().Be(129.987m);
     }

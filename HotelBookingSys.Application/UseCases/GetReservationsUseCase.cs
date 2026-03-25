@@ -48,6 +48,7 @@ public class GetReservationsUseCase
             RoomNumber = rooms.TryGetValue(reservation.RoomId, out var roomNum) ? roomNum : 0,
             CheckInDate = reservation.CheckInDate,
             CheckOutDate = reservation.CheckOutDate,
+            NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
             Status = reservation.Status.ToString()
         };

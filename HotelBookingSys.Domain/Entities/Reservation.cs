@@ -13,6 +13,8 @@ public class Reservation
     public DateOnly CheckInDate { get; private set; } 
     public DateOnly CheckOutDate { get; private set; } 
 
+    public int NumberOfGuests { get; private set; }
+
     public decimal TotalPrice { get; private set; }
     public ReservationStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -29,7 +31,7 @@ public class Reservation
     }
 
     //Constructor
-    public Reservation(Guid customerId, Guid roomId, DateOnly checkInDate, DateOnly checkOutDate, decimal roomBasePrice)
+    public Reservation(Guid customerId, Guid roomId, DateOnly checkInDate, DateOnly checkOutDate, int numberOfGuests, int roomCapacity, decimal roomBasePrice)
     {
         // Domain validation
         if (customerId == Guid.Empty)
@@ -41,6 +43,12 @@ public class Reservation
         if (checkInDate >= checkOutDate)
             throw new ArgumentException("Check-out date must be after check-in date.");
 
+        if (numberOfGuests <= 0)
+            throw new ArgumentException("Number of guests must be greater than zero.", nameof(numberOfGuests));
+
+        if (numberOfGuests > roomCapacity)
+            throw new ArgumentException($"Number of guests exceeds room capacity of {roomCapacity}.", nameof(numberOfGuests));
+
         if (roomBasePrice < 0)
             throw new ArgumentException("Total price cannot be negative.", nameof(roomBasePrice));
 
@@ -49,11 +57,15 @@ public class Reservation
         RoomId = roomId;
         CheckInDate = checkInDate;
         CheckOutDate = checkOutDate;
+        NumberOfGuests = numberOfGuests;
+        
         CalculateTotalPrice(roomBasePrice); // Calculate TotalPrice based on room base price and reservation duration
         Status = ReservationStatus.Active; 
         CreatedAt = DateTime.UtcNow;
        
     }
+
+    
 
     /// <summary>
     /// Calculates total price of the reservation and adds seasonal pricing
