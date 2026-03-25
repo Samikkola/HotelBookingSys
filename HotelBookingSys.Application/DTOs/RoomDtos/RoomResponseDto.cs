@@ -1,6 +1,6 @@
 ﻿using HotelBookingSys.Domain.Enums;
 
-namespace HotelBookingSys.Application.DTOs;
+namespace HotelBookingSys.Application.DTOs.RoomDtos;
 
 public class RoomResponseDto
 {

@@ -1,12 +1,12 @@
 ﻿using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
-using HotelBookingSys.Application.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotelBookingSys.Application.DTOs.RoomDtos;
 
-namespace HotelBookingSys.Application.UseCases;
+namespace HotelBookingSys.Application.UseCases.Rooms;
 
 public class GetAllRoomsUseCase
 {

@@ -1,4 +1,6 @@
-﻿using HotelBookingSys.Application.UseCases;
+﻿using HotelBookingSys.Application.UseCases.Customers;
+using HotelBookingSys.Application.UseCases.Reservations;
+using HotelBookingSys.Application.UseCases.Rooms;
 using HotelBookingSys.Infrastructure;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;

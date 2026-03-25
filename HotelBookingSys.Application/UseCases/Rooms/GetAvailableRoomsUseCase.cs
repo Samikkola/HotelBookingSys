@@ -1,5 +1,5 @@
 using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.DTOs;
+using HotelBookingSys.Application.DTOs.RoomDtos;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HotelBookingSys.Application.UseCases;
+namespace HotelBookingSys.Application.UseCases.Rooms;
 
 public class GetAvailableRoomsUseCase
 {

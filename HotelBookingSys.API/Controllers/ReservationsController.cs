@@ -1,8 +1,8 @@
 ﻿using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.UseCases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HotelBookingSys.Application.DTOs;
+using HotelBookingSys.Application.UseCases.Reservations;
+using HotelBookingSys.Application.DTOs.ReservationDtos;
 
 namespace HotelBookingSys.API.Controllers;
 

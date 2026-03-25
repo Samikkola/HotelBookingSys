@@ -1,11 +1,11 @@
 ﻿using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.DTOs;
+using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 
-namespace HotelBookingSys.Application.UseCases;
+namespace HotelBookingSys.Application.UseCases.Customers;
 
 public class CreateCustomerUseCase
 {

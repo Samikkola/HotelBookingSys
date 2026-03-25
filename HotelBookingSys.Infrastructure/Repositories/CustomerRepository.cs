@@ -40,7 +40,7 @@ namespace HotelBookingSys.Infrastructure.Repositories
             return await _dbContext.Customers.FindAsync(id);
         }
 
-        public async Task<Customer> GetByNameAsync(string firstName, string lastName)
+        public async Task<Customer?> GetByNameAsync(string firstName, string lastName)
         {
             return await _dbContext.Customers.FirstOrDefaultAsync(c => c.FirstName == firstName && c.LastName == lastName);
         }

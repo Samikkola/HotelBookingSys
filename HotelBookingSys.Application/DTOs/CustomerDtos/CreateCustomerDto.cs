@@ -1,4 +1,4 @@
-﻿namespace HotelBookingSys.Application.DTOs;
+﻿namespace HotelBookingSys.Application.DTOs.CustomerDtos;
 
 public class CreateCustomerDto
 {

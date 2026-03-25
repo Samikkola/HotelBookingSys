@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HotelBookingSys.Application.DTOs;
+namespace HotelBookingSys.Application.DTOs.ReservationDtos;
 
 public class ReservationResponseDto
 {

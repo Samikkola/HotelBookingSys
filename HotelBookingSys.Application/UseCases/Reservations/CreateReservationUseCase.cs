@@ -1,12 +1,12 @@
 using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.DTOs;
+using HotelBookingSys.Application.DTOs.ReservationDtos;
 using HotelBookingSys.Application.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HotelBookingSys.Application.UseCases;
+namespace HotelBookingSys.Application.UseCases.Reservations;
 
 /// <summary>
 /// Handles the creation of a reservation for a specified customer and room within a given date range.

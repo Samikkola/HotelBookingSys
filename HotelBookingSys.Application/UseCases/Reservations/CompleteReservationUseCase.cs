@@ -1,10 +1,10 @@
 using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.DTOs;
+using HotelBookingSys.Application.DTOs.ReservationDtos;
 using HotelBookingSys.Application.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace HotelBookingSys.Application.UseCases;
+namespace HotelBookingSys.Application.UseCases.Reservations;
 
 public class CompleteReservationUseCase
 {

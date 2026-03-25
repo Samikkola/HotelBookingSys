@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace HotelBookingSys.Application.DTOs;
+namespace HotelBookingSys.Application.DTOs.CustomerDtos;
 
 public class CustomerResponseDto
 {
