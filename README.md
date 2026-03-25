@@ -103,25 +103,32 @@ The project has a fully functional backend with all core features implemented:
 - DTOs for all request and response models
 - GitHub Actions CI pipeline (build & test)
 - Swagger UI integrated and functional
-- Domain unit tests for Reservation logic
+- Domain unit tests for Reservation, Room and Customer
+- Application unit tests for ReservationUseCases
 
-🚧 To Do
+🚧 To Do's
 
-Docker not yet configured
+- Expand Result Pattern usage and refine error messages
 
----
+- Implement max occupancy validation
 
-# 🎯 Next Steps (Might change as development progresses)
+- Implement authentication in endpoints
 
-Expand Result Pattern usage and refine error messages
+- Add more filtering options in GetReservation endpoint
 
-Implement max occupancy validation
+- Add more options in UpdateReservation endpoint
 
-Expand unit test coverage
+- New endpoints to add
+    - GetUserByEmail (or phonenumber)
+    - User updating and deletion 
 
-Dockerize the application
+- Add support for saving pictures on Rooms
 
-Optionally: add frontend or online booking API
+- Expand unit test coverage
+
+- Dockerize the application
+
+- Optionally: add frontend or online booking API
 
 ---
 # ▶️ Running the Application
