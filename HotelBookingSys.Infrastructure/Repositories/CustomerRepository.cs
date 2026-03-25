@@ -22,12 +22,7 @@ namespace HotelBookingSys.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var customer = await _dbContext.Customers.FindAsync(id);
-            if (customer != null)
-            {
-                _dbContext.Customers.Remove(customer);
-                await _dbContext.SaveChangesAsync();
-            }
+            throw new NotImplementedException(); //TODO: Implement soft delete or hard delete? 
         }
 
         public async Task<IEnumerable<Customer>> GetAllAsync()

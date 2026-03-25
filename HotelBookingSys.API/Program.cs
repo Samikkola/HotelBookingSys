@@ -23,9 +23,11 @@ builder.Services.AddInfrastructure();
 //Add use cases
 builder.Services.AddScoped<CreateReservationUseCase>();
 builder.Services.AddScoped<CreateCustomerUseCase>();
+builder.Services.AddScoped<GetCustomerByIdUseCase>();
 builder.Services.AddScoped<GetAllRoomsUseCase>();
 builder.Services.AddScoped<GetCustomersUseCase>();
 builder.Services.AddScoped<GetReservationsUseCase>();
+builder.Services.AddScoped<GetActiveReservationsByDateRangeUseCase>();
 builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 builder.Services.AddScoped<CancelReservationUseCase>();
 builder.Services.AddScoped<UpdateReservationDatesUseCase>();

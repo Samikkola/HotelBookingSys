@@ -36,6 +36,15 @@ namespace HotelBookingSys.Infrastructure.Repositories
             return await _dbContext.Reservations.ToListAsync();
         }
 
+        public async Task<IReadOnlyList<Reservation>> GetActiveReservationsByDateRangeAsync(DateOnly from, DateOnly to)
+        {
+            return await _dbContext.Reservations
+                .Where(r => r.Status == ReservationStatus.Active &&
+                            r.CheckInDate <= to &&
+                            r.CheckOutDate >= from)
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyList<Reservation>> GetAllOverlappingReservationsAsync(DateOnly checkInDate, DateOnly checkOutDate)
         {
             return await _dbContext.Reservations

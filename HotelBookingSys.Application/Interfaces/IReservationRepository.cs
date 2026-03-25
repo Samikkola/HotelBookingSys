@@ -12,4 +12,5 @@ public interface IReservationRepository
     Task <IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate);
 
     Task<IReadOnlyList<Reservation>> GetAllOverlappingReservationsAsync(DateOnly checkInDate, DateOnly checkOutDate);
+    Task<IReadOnlyList<Reservation>> GetActiveReservationsByDateRangeAsync(DateOnly from, DateOnly to);
 }

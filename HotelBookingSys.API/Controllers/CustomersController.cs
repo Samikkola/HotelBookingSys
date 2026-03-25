@@ -1,4 +1,5 @@
-﻿using HotelBookingSys.Application.DTOs.CustomerDtos;
+﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Application.UseCases.Customers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,19 @@ public class CustomersController : BaseController
 {
     private readonly CreateCustomerUseCase _createCustomerUseCase;
     private readonly GetCustomersUseCase _getCustomersUseCase;
+    private readonly GetCustomerByIdUseCase _getCustomerByIdUseCase;
+    
 
-    public CustomersController(CreateCustomerUseCase createCustomerUseCase, GetCustomersUseCase getCustomersUseCase)
+    public CustomersController(
+        CreateCustomerUseCase createCustomerUseCase,
+        GetCustomersUseCase getCustomersUseCase,
+        GetCustomerByIdUseCase getCustomerByIdUseCase)
+        
     {
         _createCustomerUseCase = createCustomerUseCase;
         _getCustomersUseCase = getCustomersUseCase;
+        _getCustomerByIdUseCase = getCustomerByIdUseCase;      
+        
     }
 
     [HttpGet]
@@ -38,4 +47,13 @@ public class CustomersController : BaseController
 
         return ToActionResult(result);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CustomerResponseDto>> GetCustomerById(Guid id)
+    {
+        var result = await _getCustomerByIdUseCase.ExecuteAsync(id);
+        return ToActionResult(result);
+    }
+
+   
 }
