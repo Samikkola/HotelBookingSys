@@ -21,6 +21,8 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
+
+    
       
     - name: Build solution
       run: dotnet build --no-restore --configuration Release
@@ -29,4 +31,4 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal
 
     - name: EF Core migration test
-      run: dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API --configuration Release
+      run: dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API
