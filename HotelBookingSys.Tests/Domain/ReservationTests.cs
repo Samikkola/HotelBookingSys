@@ -45,6 +45,24 @@ public class ReservationTests
     }
 
     [Fact]
+    public void Constructor_WithZeroGuests_ShouldThrowArgumentException()
+    {
+        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, 0, RoomCapacity, BasePrice);
+
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("*Number of guests must be greater than zero*");
+    }
+
+    [Fact]
+    public void Constructor_WithNegativeGuests_ShouldThrowArgumentException()
+    {
+        Action act = () => new Reservation(CustomerId, RoomId, BaseCheckIn, BaseCheckOut, -1, RoomCapacity, BasePrice);
+
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("*Number of guests must be greater than zero*");
+    }
+
+    [Fact]
     public void Constructor_WithInvalidDates_ShouldThrowArgumentException()
     {
         // Arrange
