@@ -15,7 +15,7 @@ The system will be built using:
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
 
-***At this stage, the project has a working MVP with EFCore, SQLite, Result Pattern-based error handling, and dependency injection configured.***
+The system is built as a REST API with Clean Architecture, EF Core + SQLite persistence, Result Pattern-based error handling, and full dependency injection.
 
 ---
 
@@ -37,7 +37,7 @@ HotelBookingSys.slnx
 
 ---
 
-## Layer Responsibilities (planned)
+## Layer Responsibilities
 
 ### 🔹 Domain
 
@@ -55,7 +55,7 @@ HotelBookingSys.slnx
 
 ### 🔹 Infrastructure
 
-* EF Core implementation (InMemory in MVP)
+* EF Core implementation (SQLite)
 * Database configuration
 * Repository implementations
 * Depends on Application and Domain
@@ -93,49 +93,21 @@ This ensures:
 
 ✅ Current Status
 
-✔ Solution created
-
-✔ Clean Architecture project structure established
-
-✔ Project references configured correctly
-
-✔ Dependency direction verified
-
-✔ Domain entities implemented (Customer, Room, Reservation)
-
-✔ EF Core persistence (SQLite) configured via ApplicationDbContext
-
-✔ EF Core entity models mapped with constraints and relationships
-
-✔ EF Core based repositories implemented for standard core logic
-
-✔ Database seeding configured (creating the required 30 hotel rooms + dummy customer)
-
-✔ Dependency Injection configured for repositories and UseCases
-
-✔ API endpoints created for Customer, Room, and Reservation operations (Create/Get/Update)
-
-✔ Use Cases implemented: Create/Get Customers, Create/Get/Update/Cancel/Complete Reservations, Get All/Available Rooms
-
-✔ DTOs implemented for requests and responses
-
-✔ Result Pattern implemented with HTTP status mapping in controllers
-
-✔ Reservation total price calculation, seasonal pricing logic and domain validation implemented
-
-✔ Reservation overlap validation handling Active bookings only
-
-✔ GitHub Actions CI pipeline configured (.NET Build & Test)
-
-✔ Reservation domain tests written
-
-✔ Swagger integrated and functional
+The project has a fully functional backend with all core features implemented:
+- Clean Architecture structure with Domain, Application, Infrastructure, API, and Tests layers
+- EF Core + SQLite persistence with migrations and database seeding (30 rooms)
+- Full CRUD/action endpoints for Customers, Rooms, and Reservations
+- Use cases covering customer management, room availability, and reservation lifecycle (create, update dates, cancel, complete)
+- Seasonal pricing logic and reservation overlap validation
+- Result Pattern with HTTP status mapping in controllers
+- DTOs for all request and response models
+- GitHub Actions CI pipeline (build & test)
+- Swagger UI integrated and functional
+- Domain unit tests for Reservation logic
 
 🚧 To Do
 
 Docker not yet configured
-
-Add endpoint to fetch reservation/customer by ID (for CreatedAtAction)
 
 ---
 
@@ -195,4 +167,4 @@ Developed as part of a Software Architecture course final project.
 
 ---
 
-*Work in progress – MVP phase ongoing.*
+*Functional backend – Docker integration pending.*
