@@ -152,17 +152,43 @@ Dockerize the application
 Optionally: add frontend or online booking API
 
 ---
+# ▶️ Running the Application
 
-# 🎓 Purpose of This Structure
+## Local setup
+### 1. Clone the repository
+```bash
+git clone https://github.com/<your-username>/HotelBookingSys.git
 
-The goal of starting with a clean architectural foundation is to:
+cd HotelBookingSys
+```
+### 2. Restore dependecies
+```bash
+dotnet restore
+```
+### 3. Database setup (EF Core + SQLite)
+The project uses SQLite with Entity Framework Core.
 
-* Ensure proper separation of concerns
-* Maintain testability
-* Prevent framework dependency leakage into the domain
-* Support future extensions (e.g., online booking system)
+#### Add migration 
+```bash
+dotnet ef migrations add InitialCreate -p HotelBookingSys.Infrastructure -s HotelBookingSys.API
+```
+* -p = project containing DbContext (Infrastructure)
+* -s = startup project (API)
 
+#### Apply migrations (creates database)
+```bash
+dotnet ef database update -p HotelBookingSys.Infrastructure -s HotelBookingSys.API
+```
+* Create the SQLite database (hotelbooking.db)
+* Apply all schema changes
+* If schema changes, run new migrations according these instructions
+### 4. Start the application
+``` bash
+dotnet run --project HotelBookingSys.API
+```
+### Swager UI will be available at: *http://localhost:5122/swagger*
 
+---
 # 👨‍💻 Author
 
 Developed as part of a Software Architecture course final project.
