@@ -24,7 +24,12 @@ public class CreateReservationUseCase
         _reservationRepository = reservationRepository;
     }
 
-
+    /// <summary>
+    /// Creates a new reservation based on the provided DTO.
+    /// Validates the input, checks for room availability, and returns a Result containing either the created ReservationResponseDto or error information if the operation fails.
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     public async Task<Result<ReservationResponseDto>> ExecuteAsync(CreateReservationDto dto)
     {
         

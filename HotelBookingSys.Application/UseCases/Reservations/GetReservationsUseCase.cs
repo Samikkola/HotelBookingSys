@@ -19,6 +19,11 @@ public class GetReservationsUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Retrieves all reservations from the repository.
+    /// Maps the domain entities to ReservationResponseDto, including room numbers, and returns a Result containing the list of reservations.
+    /// </summary>
+    /// <returns></returns>
     public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync()
     {
         // Fetch reservations and rooms in parallel to optimize performance

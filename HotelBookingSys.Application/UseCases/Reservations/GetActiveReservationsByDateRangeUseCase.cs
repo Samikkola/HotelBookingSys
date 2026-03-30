@@ -19,6 +19,13 @@ public class GetActiveReservationsByDateRangeUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Retrieves all active reservations that fall within the specified date range.
+    /// Validates the input dates and returns a Result containing either the list of ReservationResponseDto or error information if the operation fails.
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync(DateOnly from, DateOnly to)
     {
         if (from > to)

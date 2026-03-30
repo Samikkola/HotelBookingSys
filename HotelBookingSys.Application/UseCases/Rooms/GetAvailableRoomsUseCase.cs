@@ -20,6 +20,14 @@ public class GetAvailableRoomsUseCase
         _reservationRepository = reservationRepository;
     }
 
+    /// <summary>
+    /// Retrieves a list of available rooms for the specified check-in and check-out dates.
+    /// Fetches all rooms and overlapping reservations concurrently, then filters out rooms that are booked during the given date range.
+    /// Returns a Result containing the list of available RoomResponseDto or error information if the operation fails.
+    /// </summary>
+    /// <param name="checkInDate"></param>
+    /// <param name="checkOutDate"></param>
+    /// <returns></returns>
     public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
         //TODO: check if dates are given(now returns all rooms if no dates are given) 

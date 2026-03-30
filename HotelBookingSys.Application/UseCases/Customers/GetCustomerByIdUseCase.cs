@@ -14,7 +14,12 @@ public class GetCustomerByIdUseCase
     {
         _customerRepository = customerRepository;
     }
-
+    /// <summary>
+    /// Retrieves a customer by their unique identifier.
+    /// If the customer is found, returns a Result containing the CustomerResponseDto.
+    /// </summary>
+    /// <param name="customerId"></param>
+    /// <returns></returns>
     public async Task<Result<CustomerResponseDto>> ExecuteAsync(Guid customerId)
     {
         var customer = await _customerRepository.GetByIdAsync(customerId);

@@ -15,7 +15,12 @@ public class CreateCustomerUseCase
     {
         _customerRepository = customerRepository;
     }
-
+    /// <summary>
+    /// Creates a new customer based on the provided DTO. 
+    /// Validates the input and returns a Result containing either the created CustomerResponseDto or error information if the operation fails.
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     public async Task<Result<CustomerResponseDto>> ExecuteAsync(CreateCustomerDto dto)
     {
         Customer customer;
@@ -33,6 +38,7 @@ public class CreateCustomerUseCase
         return Result<CustomerResponseDto>.Success(MapToDto(customer));
     }
 
+   
     private CustomerResponseDto MapToDto(Customer customer)
     {
         return new CustomerResponseDto

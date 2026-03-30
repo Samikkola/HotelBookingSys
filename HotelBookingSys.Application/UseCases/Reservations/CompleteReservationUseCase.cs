@@ -17,6 +17,12 @@ public class CompleteReservationUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Completes an existing reservation by its unique identifier.
+    /// Changes the reservation status to "Completed" if it is currently "Confirmed".
+    /// </summary>
+    /// <param name="reservationId"></param>
+    /// <returns></returns>
     public async Task<Result<ReservationResponseDto>> ExecuteAsync(Guid reservationId)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId);

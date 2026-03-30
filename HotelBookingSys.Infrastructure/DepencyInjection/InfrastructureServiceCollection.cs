@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelBookingSys.Infrastructure.DepencyInjection;
 
+/// <summary>
+/// Extension method to register infrastructure services in the dependency injection container.
+/// </summary>
 public static class InfrastructureServiceCollection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)

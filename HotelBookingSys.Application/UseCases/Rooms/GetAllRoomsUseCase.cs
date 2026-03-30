@@ -17,6 +17,11 @@ public class GetAllRoomsUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Retrieves all rooms from the repository. 
+    /// Maps the domain entities to RoomResponseDto and returns a Result containing the list of rooms
+    /// </summary>
+    /// <returns></returns>
     public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync()
     {
         var rooms = await _roomRepository.GetAllAsync();

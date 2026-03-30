@@ -16,7 +16,10 @@ public class GetCustomersUseCase
     {
         _customerRepository = customerRepository;
     }
-
+    /// <summary>
+    /// Retrieves all customers from the repository. 
+    /// Maps the domain entities to CustomerResponseDto and returns a Result containing the list of customers.
+    /// </summary>
     public async Task<Result<IEnumerable<CustomerResponseDto>>> ExecuteAsync()
     {
         var customers = await _customerRepository.GetAllAsync();

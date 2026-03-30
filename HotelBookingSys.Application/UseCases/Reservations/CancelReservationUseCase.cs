@@ -17,6 +17,12 @@ public class CancelReservationUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Cancels an existing reservation by its unique identifier.
+    /// Performs a soft delete by changing the reservation status to "Cancelled".
+    /// </summary>
+    /// <param name="reservationId"></param>
+    /// <returns></returns>
     public async Task<Result<ReservationResponseDto>> ExecuteAsync(Guid reservationId)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId);

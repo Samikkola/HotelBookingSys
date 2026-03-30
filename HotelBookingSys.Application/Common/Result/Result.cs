@@ -1,5 +1,9 @@
 namespace HotelBookingSys.Application.Common.Result;
 
+/// <summary>
+/// Represents the result of an operation, indicating success or failure, and containing error information if applicable.
+/// Non-generic version of Result, used for operations that do not return a value.
+/// </summary>
 public class Result
 {
     protected Result(bool isSuccess, ErrorCode errorCode, string? errorMessage)

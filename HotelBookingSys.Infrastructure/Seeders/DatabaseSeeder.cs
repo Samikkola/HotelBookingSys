@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelBookingSys.Infrastructure.Seeders;
 
+/// <summary>
+/// Provides methods for seeding the database with initial data.
+/// Is idempotent, so it can be safely run multiple times without creating duplicate data.
+/// </summary>
 public static class DatabaseSeeder
 {
     public static void Seed(ApplicationDbContext context)

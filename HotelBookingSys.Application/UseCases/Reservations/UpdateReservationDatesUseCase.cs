@@ -18,6 +18,14 @@ public class UpdateReservationDatesUseCase
         _roomRepository = roomRepository;
     }
 
+    /// <summary>
+    /// Updates the check-in and check-out dates of an existing reservation.
+    /// Validates the new dates, checks for room availability, and returns a Result containing either the updated ReservationResponseDto or error information if the operation fails.
+    /// </summary>
+    /// <param name="reservationId"></param>
+    /// <param name="newCheckIn"></param>
+    /// <param name="newCheckOut"></param>
+    /// <returns></returns>
     public async Task<Result<ReservationResponseDto>> ExecuteAsync(Guid reservationId, DateOnly newCheckIn, DateOnly newCheckOut)
     {
         var reservation = await _reservationRepository.GetByIdAsync(reservationId);
