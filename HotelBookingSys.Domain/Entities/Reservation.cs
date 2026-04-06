@@ -17,8 +17,8 @@ public class Reservation
 
     public decimal TotalPrice { get; private set; }
     public ReservationStatus Status { get; private set; }
-    public DateTime CreatedAt { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
+    public DateTime CreatedAt { get; private set; } //TODO: Make these as one Value Object?
+    public DateTime? UpdatedAt { get; private set; } //TODO: Make these as one Value Object?
 
     //Navigation properties TODO: Decide if to use these or not
     // public Customer Customer { get; private set; }
