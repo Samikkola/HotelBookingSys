@@ -1,4 +1,4 @@
-﻿using HotelBookingSys.Application.Interfaces;
+﻿using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,12 @@ namespace HotelBookingSys.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException(); //TODO: Implement soft delete or hard delete? 
+            var customer = await _dbContext.Customers.FindAsync(id);
+            if (customer == null)
+                return;
+
+            _dbContext.Customers.Remove(customer);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Customer>> GetAllAsync()
@@ -38,6 +43,16 @@ namespace HotelBookingSys.Infrastructure.Repositories
         public async Task<Customer?> GetByNameAsync(string firstName, string lastName)
         {
             return await _dbContext.Customers.FirstOrDefaultAsync(c => c.FirstName == firstName && c.LastName == lastName);
+        }
+
+        public async Task<Customer?> GetCustomerByEmailAsync(string email)
+        {
+            return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
+        }
+
+        public async Task<Customer?> GetCustomerByPhoneAsync(string phone)
+        {
+            return await _dbContext.Customers.FirstOrDefaultAsync(c => c.PhoneNumber == phone);
         }
 
         public async Task UpdateAsync(Customer customer)

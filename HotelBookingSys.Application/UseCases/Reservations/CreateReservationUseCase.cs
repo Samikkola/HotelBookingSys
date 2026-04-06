@@ -1,6 +1,6 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System;
 using System.Linq;
@@ -64,7 +64,7 @@ public class CreateReservationUseCase
         }
         catch (InvalidOperationException ex)//Catch for domain exceptions
         {
-            return Result<ReservationResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, ex.Message);
         }
         // Save reservation
         await _reservationRepository.AddAsync(reservation);

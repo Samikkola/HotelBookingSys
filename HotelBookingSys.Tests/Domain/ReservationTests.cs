@@ -205,7 +205,7 @@ public class ReservationTests
     }
 
     [Fact]
-    public void UpdateReservation_WhenActive_ShouldUpdateDetails()
+    public void UpdateReservationDetails_WhenActive_ShouldUpdateDetails()
     {
         // Arrange
         Reservation reservation = ValidReservation;
@@ -215,8 +215,14 @@ public class ReservationTests
         DateOnly newCheckInDate = BaseCheckIn.AddDays(1);
         DateOnly newCheckOutDate = BaseCheckOut.AddDays(1);
         decimal newRoomBasePrice = 120m;
-        
-        reservation.UpdateReservation(newCheckInDate, newCheckOutDate, newRoomBasePrice);
+
+        reservation.UpdateReservationDetails(
+            reservation.RoomId,
+            newCheckInDate,
+            newCheckOutDate,
+            reservation.NumberOfGuests,
+            RoomCapacity,
+            newRoomBasePrice);
         
         // Assert
         reservation.CheckInDate.Should().Be(newCheckInDate);
@@ -231,14 +237,20 @@ public class ReservationTests
     }
 
     [Fact]
-    public void UpdateReservation_WhenNotActive_ShouldThrowInvalidOperationException()
+    public void UpdateReservationDetails_WhenNotActive_ShouldThrowInvalidOperationException()
     {
         // Arrange
         Reservation reservation = ValidReservation;
         reservation.CancelReservation(); // First cancel to set status to Cancelled
 
         // Act
-        Action act = () => reservation.UpdateReservation(BaseCheckIn, BaseCheckOut, BasePrice);
+        Action act = () => reservation.UpdateReservationDetails(
+            reservation.RoomId,
+            BaseCheckIn,
+            BaseCheckOut,
+            reservation.NumberOfGuests,
+            RoomCapacity,
+            BasePrice);
 
         //Assert
         act.Should().Throw<InvalidOperationException>()
@@ -246,7 +258,7 @@ public class ReservationTests
     }
 
     [Fact]
-    public void UpdateReservation_WithInvalidDates_ShouldThrowArgumentException()
+    public void UpdateReservationDetails_WithInvalidDates_ShouldThrowArgumentException()
     {
         // Arrange
         Reservation reservation = ValidReservation;
@@ -256,7 +268,13 @@ public class ReservationTests
         DateOnly newCheckInDate = BaseCheckOut;
         DateOnly newCheckOutDate = BaseCheckIn;
         
-        Action act = () => reservation.UpdateReservation(newCheckInDate, newCheckOutDate, BasePrice);
+        Action act = () => reservation.UpdateReservationDetails(
+            reservation.RoomId,
+            newCheckInDate,
+            newCheckOutDate,
+            reservation.NumberOfGuests,
+            RoomCapacity,
+            BasePrice);
         
         // Assert
         act.Should().Throw<ArgumentException>()

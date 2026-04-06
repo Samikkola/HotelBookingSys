@@ -1,6 +1,6 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +20,22 @@ public class GetReservationsUseCase
     }
 
     /// <summary>
-    /// Retrieves all reservations from the repository.
+    /// Retrieves reservations from the repository using optional filters.
     /// Maps the domain entities to ReservationResponseDto, including room numbers, and returns a Result containing the list of reservations.
     /// </summary>
+    /// <param name="filter"></param>
     /// <returns></returns>
-    public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync()
+    public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync(ReservationFilterDto? filter = null)
     {
-        // Fetch reservations and rooms in parallel to optimize performance
-        var reservationsTask = _reservationRepository.GetAllAsync();
+        if (filter is not null && filter.FromDate.HasValue && filter.ToDate.HasValue && filter.FromDate > filter.ToDate)
+            return Result<IEnumerable<ReservationResponseDto>>.Failure(ErrorCode.Validation, "FromDate must be on or before ToDate.");
+
+        var reservationsTask = _reservationRepository.GetAllAsync(
+            filter?.CustomerId,
+            filter?.RoomId,
+            filter?.Status,
+            filter?.FromDate,
+            filter?.ToDate);
         var roomsTask = _roomRepository.GetAllAsync();
         // Wait for both tasks to complete
         await Task.WhenAll(reservationsTask, roomsTask);

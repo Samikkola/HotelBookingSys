@@ -120,18 +120,48 @@ public class Reservation
         UpdatedAt = DateTime.UtcNow;
         Status = ReservationStatus.Completed;
     }
-    public void UpdateReservation(DateOnly newCheckInDate, DateOnly newCheckOutDate, decimal roomBasePrice)
+
+    /// <summary>
+    /// Updates reservation room, dates and guest count.
+    /// </summary>
+    /// <param name="roomId"></param>
+    /// <param name="newCheckInDate"></param>
+    /// <param name="newCheckOutDate"></param>
+    /// <param name="numberOfGuests"></param>
+    /// <param name="roomCapacity"></param>
+    /// <param name="roomBasePrice"></param>
+    public void UpdateReservationDetails(
+        Guid roomId,
+        DateOnly newCheckInDate,
+        DateOnly newCheckOutDate,
+        int numberOfGuests,
+        int roomCapacity,
+        decimal roomBasePrice)
     {
         if (Status != ReservationStatus.Active)
             throw new InvalidOperationException("Only active reservations can be updated.");
-        
+
+        if (roomId == Guid.Empty)
+            throw new ArgumentException("Room ID is required.", nameof(roomId));
+
         if (newCheckInDate >= newCheckOutDate)
             throw new ArgumentException("Check-out date must be after check-in date.");
-        
+
+        if (numberOfGuests <= 0)
+            throw new ArgumentException("Number of guests must be greater than zero.", nameof(numberOfGuests));
+
+        if (numberOfGuests > roomCapacity)
+            throw new ArgumentException($"Number of guests exceeds room capacity of {roomCapacity}.", nameof(numberOfGuests));
+
+        if (roomBasePrice < 0)
+            throw new ArgumentException("Total price cannot be negative.", nameof(roomBasePrice));
+
+        RoomId = roomId;
         CheckInDate = newCheckInDate;
         CheckOutDate = newCheckOutDate;
+        NumberOfGuests = numberOfGuests;
         UpdatedAt = DateTime.UtcNow;
-        CalculateTotalPrice(roomBasePrice); // Recalculate total price based on new dates
+        CalculateTotalPrice(roomBasePrice);
     }
 
     

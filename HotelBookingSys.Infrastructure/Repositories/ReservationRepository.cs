@@ -1,4 +1,4 @@
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Enums;
 using HotelBookingSys.Infrastructure.Data;
@@ -31,9 +31,31 @@ namespace HotelBookingSys.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Reservation>> GetAllAsync()
+        public async Task<IEnumerable<Reservation>> GetAllAsync(
+            Guid? customerId = null,
+            Guid? roomId = null,
+            ReservationStatus? status = null,
+            DateOnly? fromDate = null,
+            DateOnly? toDate = null)
         {
-            return await _dbContext.Reservations.ToListAsync();
+            var query = _dbContext.Reservations.AsQueryable();
+
+            if (customerId.HasValue)
+                query = query.Where(r => r.CustomerId == customerId.Value);
+
+            if (roomId.HasValue)
+                query = query.Where(r => r.RoomId == roomId.Value);
+
+            if (status.HasValue)
+                query = query.Where(r => r.Status == status.Value);
+
+            if (fromDate.HasValue)
+                query = query.Where(r => r.CheckOutDate >= fromDate.Value);
+
+            if (toDate.HasValue)
+                query = query.Where(r => r.CheckInDate <= toDate.Value);
+
+            return await query.ToListAsync();
         }
 
         public async Task<IReadOnlyList<Reservation>> GetActiveReservationsByDateRangeAsync(DateOnly from, DateOnly to)
@@ -73,6 +95,12 @@ namespace HotelBookingSys.Infrastructure.Repositories
         {
             _dbContext.Reservations.Update(reservation);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasActiveReservationsByCustomerIdAsync(Guid customerId)
+        {
+            return await _dbContext.Reservations.AnyAsync(
+                r => r.CustomerId == customerId && r.Status == ReservationStatus.Active);
         }
     }
 }

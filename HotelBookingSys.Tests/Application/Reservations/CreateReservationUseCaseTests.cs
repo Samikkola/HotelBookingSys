@@ -1,6 +1,6 @@
 using FluentAssertions;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Enums;

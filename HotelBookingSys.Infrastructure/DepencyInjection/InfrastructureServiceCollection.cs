@@ -1,4 +1,4 @@
-﻿using HotelBookingSys.Application.Interfaces;
+﻿using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Infrastructure;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.Repositories;

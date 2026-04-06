@@ -1,6 +1,6 @@
 ﻿using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.CustomerDtos;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System;
 using System.Threading.Tasks;

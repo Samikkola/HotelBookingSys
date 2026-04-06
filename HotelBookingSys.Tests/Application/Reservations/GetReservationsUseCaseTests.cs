@@ -1,6 +1,7 @@
 using FluentAssertions;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Application.UseCases.Reservations;
+using HotelBookingSys.Application.DTOs.ReservationDtos;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Enums;
 using Moq;
@@ -29,5 +30,35 @@ public class GetReservationsUseCaseTests
         result.Value.Should().NotBeNull();
         result.Value!.Should().ContainSingle();
         result.Value!.First().RoomNumber.Should().Be(room.RoomNumber);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithFilter_PassesFilterToRepository()
+    {
+        var reservationRepo = new Mock<IReservationRepository>();
+        var roomRepo = new Mock<IRoomRepository>();
+
+        var room = new Room(101, RoomType.Standard, 2, 100m);
+        var reservation = new Reservation(Guid.NewGuid(), room.Id, new DateOnly(2026, 2, 10), new DateOnly(2026, 2, 12), 1, room.RoomCapacity, room.BasePrice);
+
+        reservationRepo
+            .Setup(r => r.GetAllAsync(reservation.CustomerId, room.Id, ReservationStatus.Active, new DateOnly(2026, 2, 1), new DateOnly(2026, 2, 28)))
+            .ReturnsAsync(new List<Reservation> { reservation });
+        roomRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Room> { room });
+
+        var useCase = new GetReservationsUseCase(reservationRepo.Object, roomRepo.Object);
+
+        var result = await useCase.ExecuteAsync(new ReservationFilterDto
+        {
+            CustomerId = reservation.CustomerId,
+            RoomId = room.Id,
+            Status = ReservationStatus.Active,
+            FromDate = new DateOnly(2026, 2, 1),
+            ToDate = new DateOnly(2026, 2, 28)
+        });
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value!.Should().ContainSingle();
     }
 }

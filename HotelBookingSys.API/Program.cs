@@ -24,13 +24,18 @@ builder.Services.AddInfrastructure();
 builder.Services.AddScoped<CreateReservationUseCase>();
 builder.Services.AddScoped<CreateCustomerUseCase>();
 builder.Services.AddScoped<GetCustomerByIdUseCase>();
+builder.Services.AddScoped<GetCustomerByEmailUseCase>();
+builder.Services.AddScoped<GetCustomerByPhoneUseCase>();
+builder.Services.AddScoped<UpdateCustomerUseCase>();
+builder.Services.AddScoped<DeleteCustomerUseCase>();
 builder.Services.AddScoped<GetAllRoomsUseCase>();
 builder.Services.AddScoped<GetCustomersUseCase>();
 builder.Services.AddScoped<GetReservationsUseCase>();
+builder.Services.AddScoped<GetReservationByIdUseCase>();
 builder.Services.AddScoped<GetActiveReservationsByDateRangeUseCase>();
 builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 builder.Services.AddScoped<CancelReservationUseCase>();
-builder.Services.AddScoped<UpdateReservationDatesUseCase>();
+builder.Services.AddScoped<UpdateReservationUseCase>();
 builder.Services.AddScoped<CompleteReservationUseCase>();
 
 //Build the app

@@ -1,5 +1,5 @@
 ﻿using HotelBookingSys.Application.Common.Result;
-using HotelBookingSys.Application.Interfaces;
+using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;

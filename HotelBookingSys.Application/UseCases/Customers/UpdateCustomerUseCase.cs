@@ -2,29 +2,40 @@ using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
-using System.Threading.Tasks;
 
 namespace HotelBookingSys.Application.UseCases.Customers;
 
-public class GetCustomerByIdUseCase
+public class UpdateCustomerUseCase
 {
     private readonly ICustomerRepository _customerRepository;
 
-    public GetCustomerByIdUseCase(ICustomerRepository customerRepository)
+    public UpdateCustomerUseCase(ICustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
     }
+
     /// <summary>
-    /// Retrieves a customer by their unique identifier.
-    /// If the customer is found, returns a Result containing the CustomerResponseDto.
+    /// Updates customer details.
     /// </summary>
     /// <param name="customerId"></param>
+    /// <param name="dto"></param>
     /// <returns></returns>
-    public async Task<Result<CustomerResponseDto>> ExecuteAsync(Guid customerId)
+    public async Task<Result<CustomerResponseDto>> ExecuteAsync(Guid customerId, UpdateCustomerDto dto)
     {
         var customer = await _customerRepository.GetByIdAsync(customerId);
         if (customer == null)
             return Result<CustomerResponseDto>.Failure(ErrorCode.NotFound, $"Customer with ID {customerId} not found.");
+
+        try
+        {
+            customer.UpdateDetails(dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Notes);
+        }
+        catch (ArgumentException ex)
+        {
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Validation, ex.Message);
+        }
+
+        await _customerRepository.UpdateAsync(customer);
 
         return Result<CustomerResponseDto>.Success(MapToDto(customer));
     }
@@ -38,7 +49,7 @@ public class GetCustomerByIdUseCase
             LastName = customer.LastName,
             Email = customer.Email,
             Phone = customer.PhoneNumber,
-            Notes = customer.Notes?.ToString() ?? string.Empty
+            Notes = customer.Notes ?? string.Empty
         };
     }
 }

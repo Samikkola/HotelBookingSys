@@ -46,7 +46,41 @@ public class Customer
         Notes = notes;
     }
 
-    //TODO: Add methods for updating customer details, adding notes, etc.
+    /// <summary>
+    /// Updates customer details.
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    /// <param name="phoneNumber"></param>
+    /// <param name="notes"></param>
+    public void UpdateDetails(string firstName, string lastName, string email, string phoneNumber, string? notes)
+    {
+        if (string.IsNullOrWhiteSpace(firstName))
+            throw new ArgumentException("First name is required.", nameof(firstName));
+
+        if (string.IsNullOrWhiteSpace(lastName))
+            throw new ArgumentException("Last name is required.", nameof(lastName));
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentException("Email is required.", nameof(email));
+
+        if (!email.Contains('@'))
+            throw new ArgumentException("Email must be eligible.", nameof(email));
+
+        if (email.Length > 255)
+            throw new ArgumentException("Email must be under 255 characters.", nameof(email));
+
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+            throw new ArgumentException("Phone number is required.", nameof(phoneNumber));
+
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        PhoneNumber = phoneNumber;
+        Notes = notes;
+    }
+
     //TODO: Add validation on email and phone (no duplicates)
     //TODO: Add searching customer based on email or phone or name ?
 
