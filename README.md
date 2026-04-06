@@ -43,13 +43,15 @@ HotelBookingSys.slnx
 
 * Core business entities (Customer, Room, Reservation)
 * Enums and value objects
+* Repository interfaces
 * Domain rules
 * No external dependencies
 
 ### 🔹 Application
 
 * Use cases 
-* Repository interfaces
+* DTO's
+* Application logic and orchestration
 * Service abstractions
 * Depends only on Domain
 
@@ -96,15 +98,17 @@ This ensures:
 The project has a fully functional backend with all core features implemented:
 - Clean Architecture structure with Domain, Application, Infrastructure, API, and Tests layers
 - EF Core + SQLite persistence with migrations and database seeding (30 rooms)
-- Full CRUD/action endpoints for Customers, Rooms, and Reservations
-- Use cases covering customer management, room availability, and reservation lifecycle (create, update dates, cancel, complete)
+- Use cases covering customer management, room availability, and reservation lifecycle (create, update, cancel, complete)
 - Seasonal pricing logic and reservation overlap validation
 - Result Pattern with HTTP status mapping in controllers
 - DTOs for all request and response models
+- Customer endpoints for lookup by email/phone, update, and delete
+- Reservation filtering support (`customerId`, `roomId`, `status`, `fromDate`, `toDate`)
 - GitHub Actions CI pipeline (build & test)
 - Swagger UI integrated and functional
 - Domain unit tests for Reservation, Room and Customer
 - Application unit tests for ReservationUseCases
+
 
 🚧 To Do's
 
@@ -113,14 +117,6 @@ The project has a fully functional backend with all core features implemented:
 - Implement max occupancy validation
 
 - Implement authentication in endpoints
-
-- Add more filtering options in GetReservation endpoint
-
-- Add more options in UpdateReservation endpoint
-
-- New endpoints to add
-    - GetUserByEmail (or phonenumber)
-    - User updating and deletion 
 
 - Add support for saving pictures on Rooms
 
