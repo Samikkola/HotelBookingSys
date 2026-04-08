@@ -453,3 +453,4 @@ $RECYCLE.BIN/
 # Environment variables
 .env
 .env.*
+**/appsettings.Development.json

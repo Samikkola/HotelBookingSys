@@ -1,7 +1,6 @@
 ﻿using HotelBookingSys.Application.UseCases.Customers;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Application.UseCases.Rooms;
-using HotelBookingSys.Infrastructure;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Add DbContext with SQLite connection string from appsettings.json
-//TODO: Move this to AddInfrastructure ?
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Get the connection string from configuration
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is missing or empty. Configure it via appsettings or environment variable ConnectionStrings__DefaultConnection.");
+}
 
 //Add contorllers, swagger and infrastructure services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(connectionString);
 
 //Add use cases
 builder.Services.AddScoped<CreateReservationUseCase>();
@@ -49,18 +50,10 @@ if (app.Environment.IsDevelopment())
     // Automatically apply migrations and seed the database in development
     using (var scope = app.Services.CreateScope())
     {
-        var services = scope.ServiceProvider;
-        try
-        {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            context.Database.Migrate();
-            HotelBookingSys.Infrastructure.Seeders.DatabaseSeeder.Seed(context);
-        }
-        catch (Exception ex)
-        {
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while migrating or seeding the database.");
-        }
+        
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
+        HotelBookingSys.Infrastructure.Seeders.DatabaseSeeder.Seed(context);
     }
 }
 
