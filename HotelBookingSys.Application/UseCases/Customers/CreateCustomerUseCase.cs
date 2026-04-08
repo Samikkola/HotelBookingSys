@@ -23,6 +23,12 @@ public class CreateCustomerUseCase
     /// <returns></returns>
     public async Task<Result<CustomerResponseDto>> ExecuteAsync(CreateCustomerDto dto)
     {
+        if (await _customerRepository.EmailExistsAsync(dto.Email))
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this email already exists.");
+
+        if (await _customerRepository.PhoneExistsAsync(dto.PhoneNumber))
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this phone number already exists.");
+
         Customer customer;
         try
         {

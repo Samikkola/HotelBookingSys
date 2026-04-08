@@ -55,6 +55,20 @@ namespace HotelBookingSys.Infrastructure.Repositories
             return await _dbContext.Customers.FirstOrDefaultAsync(c => c.PhoneNumber == phone);
         }
 
+        public async Task<bool> EmailExistsAsync(string email, Guid? excludeCustomerId = null)
+        {
+            return await _dbContext.Customers.AnyAsync(c =>
+                c.Email == email &&
+                (!excludeCustomerId.HasValue || c.Id != excludeCustomerId.Value));
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phone, Guid? excludeCustomerId = null)
+        {
+            return await _dbContext.Customers.AnyAsync(c =>
+                c.PhoneNumber == phone &&
+                (!excludeCustomerId.HasValue || c.Id != excludeCustomerId.Value));
+        }
+
         public async Task UpdateAsync(Customer customer)
         {
             _dbContext.Customers.Update(customer);

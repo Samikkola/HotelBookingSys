@@ -31,6 +31,22 @@ public interface ICustomerRepository
     /// <param name="phone"></param>
     /// <returns></returns>
     Task<Customer?> GetCustomerByPhoneAsync(string phone);
+
+    /// <summary>
+    /// Checks whether an email is already used by another customer.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="excludeCustomerId"></param>
+    /// <returns></returns>
+    Task<bool> EmailExistsAsync(string email, Guid? excludeCustomerId = null);
+
+    /// <summary>
+    /// Checks whether a phone number is already used by another customer.
+    /// </summary>
+    /// <param name="phone"></param>
+    /// <param name="excludeCustomerId"></param>
+    /// <returns></returns>
+    Task<bool> PhoneExistsAsync(string phone, Guid? excludeCustomerId = null);
    
     /// <summary>
     /// Retrieves all customers.

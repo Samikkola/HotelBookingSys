@@ -26,6 +26,12 @@ public class UpdateCustomerUseCase
         if (customer == null)
             return Result<CustomerResponseDto>.Failure(ErrorCode.NotFound, $"Customer with ID {customerId} not found.");
 
+        if (await _customerRepository.EmailExistsAsync(dto.Email, customerId))
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this email already exists.");
+
+        if (await _customerRepository.PhoneExistsAsync(dto.PhoneNumber, customerId))
+            return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this phone number already exists.");
+
         try
         {
             customer.UpdateDetails(dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Notes);

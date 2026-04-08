@@ -24,7 +24,9 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
+            entity.HasIndex(e => e.Email).IsUnique();
             entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => e.PhoneNumber).IsUnique();
             entity.Property(e => e.Notes).HasMaxLength(1000);
         });
 
