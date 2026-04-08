@@ -15,7 +15,7 @@ The system will be built using:
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
 
-The system is built as a REST API with Clean Architecture, EF Core + SQLite persistence, Result Pattern-based error handling, and full dependency injection.
+The system is built as a REST API with Clean Architecture, EF Core + SQL Server persistence, Result Pattern-based error handling, and full dependency injection.
 
 ---
 
@@ -57,7 +57,7 @@ HotelBookingSys.slnx
 
 ### 🔹 Infrastructure
 
-* EF Core implementation (SQLite)
+* EF Core implementation (SQL Server)
 * Database configuration
 * Repository implementations
 * Depends on Application and Domain
@@ -97,7 +97,7 @@ This ensures:
 
 The project has a fully functional backend with all core features implemented:
 - Clean Architecture structure with Domain, Application, Infrastructure, API, and Tests layers
-- EF Core + SQLite persistence with migrations and database seeding (30 rooms)
+- EF Core + SQL Server persistence with migrations and database seeding (30 rooms)
 - Use cases covering customer management, room availability, and reservation lifecycle (create, update, cancel, complete)
 - Seasonal pricing logic and reservation overlap validation
 - Result Pattern with HTTP status mapping in controllers
@@ -122,46 +122,83 @@ The project has a fully functional backend with all core features implemented:
 
 - Expand unit test coverage
 
-- Dockerize the application
-
 - Optionally: add frontend or online booking API
 
 ---
 # ▶️ Running the Application
 
-## Local setup
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/<your-username>/HotelBookingSys.git
 
 cd HotelBookingSys
 ```
-### 2. Restore dependecies
+### 2. Restore dependencies
 ```bash
 dotnet restore
 ```
-### 3. Database setup (EF Core + SQLite)
-The project uses SQLite with Entity Framework Core.
 
-#### Add migration 
+## Local development with Docker (recommended)
+
+Run API + SQL Server in containers:
+
 ```bash
-dotnet ef migrations add InitialCreate -p HotelBookingSys.Infrastructure -s HotelBookingSys.API
+docker compose up --build
 ```
-* -p = project containing DbContext (Infrastructure)
-* -s = startup project (API)
 
-#### Apply migrations (creates database)
+Then open:
+
+- Swagger: `http://localhost:8080/swagger`
+- Rooms endpoint: `http://localhost:8080/api/rooms`
+
+Notes:
+
+- `docker-compose.yml` is for local development only.
+- SQL Server data is persisted in a named Docker volume.
+- The API applies migrations and seeds data automatically in `Development`.
+
+Stop services:
+
+```bash
+docker compose down
+```
+
+## Local development without Docker
+
+Use a local SQL Server instance and run the API directly.
+
+1. Configure connection string in `HotelBookingSys.API/appsettings.Development.json`:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=hotelbooking-db;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+```
+
+or set environment variable:
+
+```bash
+ConnectionStrings__DefaultConnection=<your-connection-string>
+```
+
+2. Apply migrations:
+
 ```bash
 dotnet ef database update -p HotelBookingSys.Infrastructure -s HotelBookingSys.API
 ```
-* Create the SQLite database (hotelbooking.db)
-* Apply all schema changes
-* If schema changes, run new migrations according these instructions
-### 4. Start the application
-``` bash
+
+3. Run API:
+
+```bash
 dotnet run --project HotelBookingSys.API
 ```
-### Swager UI will be available at: *http://localhost:5122/swagger*
+
+Swagger will be available at: `http://localhost:5122/swagger`
+
+## Production configuration (Azure) - UPCOMING
+
+- Production connection string is **not** stored in code or repository files.
+- Configure `ConnectionStrings__DefaultConnection` in Azure App Service Configuration.
 
 ---
 # 👨‍💻 Author
@@ -170,4 +207,4 @@ Developed as part of a Software Architecture course final project.
 
 ---
 
-*Functional backend – Docker integration pending.*
+*Functional backend with Docker-based local development and SQL Server persistence.*
