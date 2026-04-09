@@ -42,10 +42,13 @@ builder.Services.AddScoped<CompleteReservationUseCase>();
 //Build the app
 var app = builder.Build();
 
+//Swagger to test endpoints also in AZURE
+app.UseSwagger();
+app.UseSwaggerUI();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
 
     // Automatically apply migrations and seed the database in development
     using (var scope = app.Services.CreateScope())

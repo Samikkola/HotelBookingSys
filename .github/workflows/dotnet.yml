@@ -49,6 +49,13 @@ jobs:
     - name: Restore and publish
       run: dotnet publish HotelBookingSys.API/HotelBookingSys.API.csproj -c Release -o ./publish
 
+    - name: Run EF Core migrations
+      run: |
+        dotnet tool install --global dotnet-ef --prerelease
+        dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API
+      env:
+        ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
