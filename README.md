@@ -1,5 +1,9 @@
 # Hotel Booking System – Backend
 
+## 📊 Status Badges
+
+[![CI/CD (Build, Test, Deploy)](https://github.com/Samikkola/HotelBookingSys/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/Samikkola/HotelBookingSys/actions/workflows/dotnet.yml)
+
 ## 📌 Project Overview
 
 This project is a backend implementation of a hotel reservation system developed as a final assignment for a Software Architecture course.
@@ -104,7 +108,7 @@ The project has a fully functional backend with all core features implemented:
 - DTOs for all request and response models
 - Customer endpoints for lookup by email/phone, update, and delete
 - Reservation filtering support (`customerId`, `roomId`, `status`, `fromDate`, `toDate`)
-- GitHub Actions CI pipeline (build & test)
+- GitHub Actions CI/CD pipeline (build, test, EF Core migration, Azure deployment)
 - Swagger UI integrated and functional
 - Domain unit tests for Reservation, Room and Customer
 - Application unit tests for ReservationUseCases
@@ -195,10 +199,33 @@ dotnet run --project HotelBookingSys.API
 
 Swagger will be available at: `http://localhost:5122/swagger`
 
-## Production configuration (Azure) - UPCOMING
+## Production configuration (Azure)
 
 - Production connection string is **not** stored in code or repository files.
 - Configure `ConnectionStrings__DefaultConnection` in Azure App Service Configuration.
+
+## 🚀 CI/CD and Azure Deployment
+
+The repository includes a GitHub Actions workflow at `.github/workflows/dotnet.yml`.
+
+- On `pull_request`: runs build and tests.
+- On `push` to `main`/`master`: runs build + tests, executes EF Core migrations against Azure SQL, and deploys to Azure App Service.
+
+### Required GitHub Secrets
+
+- `AZURE_WEBAPP_PUBLISH_PROFILE` (download from Azure Portal → App Service → Overview → Download publish profile)
+- `AZURE_SQL_CONNECTION_STRING` (Azure SQL connection string used during deployment migrations)
+
+### Azure Target
+
+- App Service name: `app-hotelbookingsys`
+
+### Required Azure Resources (minimal)
+
+- `Azure App Service` (Web App) for hosting the API (`app-hotelbookingsys`)
+- `App Service Plan` for the Web App runtime
+- `Azure SQL Server` + `Azure SQL Database` for persistence
+- Network access from App Service/GitHub Actions to Azure SQL (firewall/VNet rules as needed)
 
 ---
 # 👨‍💻 Author
