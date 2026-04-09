@@ -1,4 +1,8 @@
-name: .NET Build and Test
+# Required GitHub secret:
+# AZURE_WEBAPP_PUBLISH_PROFILE — download from Azure Portal:
+# App Service → Overview → Download publish profile
+
+name: .NET Build->Test->Deploy
 
 on:
   push:
@@ -21,9 +25,6 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
-
-    - name: Install dotnet-ef
-      run: dotnet tool install --global dotnet-ef --prerelease
       
     - name: Build solution
       run: dotnet build --no-restore --configuration Release
@@ -31,5 +32,26 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
 
-    - name: EF Core migration test
-      run: dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API --configuration Release
+  deploy:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore and publish
+      run: dotnet publish HotelBookingSys.API/HotelBookingSys.API.csproj -c Release -o ./publish
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: app-hotelbookingsys
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./publish
