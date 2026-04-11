@@ -2,7 +2,7 @@
 # - AZURE_WEBAPP_PUBLISH_PROFILE (from Azure Portal -> App Service -> Overview -> Download publish profile)
 # - AZURE_SQL_CONNECTION_STRING (SQL connection string used by EF migration step)
 
-name: .NET Build->Test->Deploy
+name: Check Changes-> Build-> Test-> Deploy
 
 on:
   # Run CI on pushes to main branches
@@ -13,6 +13,25 @@ on:
     branches: [ "master", "main" ]
 
 jobs:
+  # Detect if deploy-relevant files changed
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_needed: ${{ steps.filter.outputs.deploy }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            deploy:
+              - 'HotelBookingSys.API/**'
+              - 'HotelBookingSys.Application/**'
+              - 'HotelBookingSys.Infrastructure/**'
+              - 'HotelBookingSys.Domain/**'
   # CI job: checks code quality by restoring, building, and testing
   build-and-test:
     runs-on: ubuntu-latest
@@ -30,20 +49,22 @@ jobs:
         
     # Restore NuGet packages for the solution
     - name: Restore dependencies
-      run: dotnet restore HotelBookingSys.sln
+      run: dotnet restore HotelBookingSys.slnx
       
     # Compile the solution in Release mode (without restore, since restore already ran)
     - name: Build solution
-      run: dotnet build HotelBookingSys.sln --no-restore --configuration Release
+      run: dotnet build HotelBookingSys.slnx --no-restore --configuration Release
       
     # Execute tests in Release mode (without rebuilding)
     - name: Test
-      run: dotnet test HotelBookingSys.sln --no-build --configuration Release --verbosity normal
+      run: dotnet test HotelBookingSys.slnx --no-build --configuration Release --verbosity normal
 
   # CD job: deploy only after CI passes, and only for direct pushes to master/main
   deploy:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-    needs: build-and-test
+    needs: [changes, build-and-test]
+    if: github.event_name == 'push' &&
+        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
+        needs.changes.outputs.deploy_needed == 'true'
     runs-on: ubuntu-latest
 
     steps:
