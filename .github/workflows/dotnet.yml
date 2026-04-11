@@ -59,7 +59,7 @@ jobs:
     - name: Test
       run: dotnet test HotelBookingSys.slnx --no-build --configuration Release --verbosity normal
 
-  # CD job: deploy only after CI passes, and only for direct pushes to master/main
+  # CD job: deploy only after CI passes and relevant changes have been made to the source code and only for direct pushes to master/main
   deploy:
     needs: [changes, build-and-test]
     if: github.event_name == 'push' &&
