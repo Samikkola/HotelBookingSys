@@ -1,61 +1,76 @@
 # Required GitHub secret:
-# AZURE_WEBAPP_PUBLISH_PROFILE — download from Azure Portal:
-# App Service → Overview → Download publish profile
+# - AZURE_WEBAPP_PUBLISH_PROFILE (from Azure Portal -> App Service -> Overview -> Download publish profile)
+# - AZURE_SQL_CONNECTION_STRING (SQL connection string used by EF migration step)
 
 name: .NET Build->Test->Deploy
 
 on:
+  # Run CI on pushes to main branches
   push:
     branches: [ "master", "main" ]
+  # Also run CI validation for pull requests targeting main branches
   pull_request:
     branches: [ "master", "main" ]
 
 jobs:
+  # CI job: checks code quality by restoring, building, and testing
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+    # Pull repository content to runner
     - name: Checkout repo
       uses: actions/checkout@v4
     
+    # Install .NET SDK used by the solution
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
         
+    # Restore NuGet packages for the solution
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore HotelBookingSys.sln
       
+    # Compile the solution in Release mode (without restore, since restore already ran)
     - name: Build solution
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build HotelBookingSys.sln --no-restore --configuration Release
       
+    # Execute tests in Release mode (without rebuilding)
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test HotelBookingSys.sln --no-build --configuration Release --verbosity normal
 
+  # CD job: deploy only after CI passes, and only for direct pushes to master/main
   deploy:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
+    # Pull repository content to runner
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    # Install .NET SDK for publish and migration commands
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
 
+    # Publish API project to local folder used as deployment package
     - name: Restore and publish
       run: dotnet publish HotelBookingSys.API/HotelBookingSys.API.csproj -c Release -o ./publish
 
+    # Apply EF Core migrations against Azure SQL before app deployment
     - name: Run EF Core migrations
       run: |
         dotnet tool install --global dotnet-ef --prerelease
         dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API
       env:
+        # Inject DB connection string as environment variable for the startup project
         ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
+    # Deploy published output to Azure App Service
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
