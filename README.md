@@ -144,6 +144,14 @@ dotnet restore
 
 ## Local development with Docker (recommended)
 
+Add .env file in project root:
+```bash
+# .env
+DB_NAME= hotelbooking-db
+DB_PASSWORD=`{your-password-here}`
+```
+
+
 Run API + SQL Server in containers:
 
 ```bash
@@ -209,7 +217,8 @@ Swagger will be available at: `http://localhost:5122/swagger`
 The repository includes a GitHub Actions workflow at `.github/workflows/dotnet.yml`.
 
 - On `pull_request`: runs build and tests.
-- On `push` to `main`/`master`: runs build + tests, executes EF Core migrations against Azure SQL, and deploys to Azure App Service.
+- On `push` to `main`/`master`: runs build + tests 
+	- If successfull, checks application code for changes and executes EF Core migrations against Azure SQL, and deploys to Azure App Service, if needed.
 
 ### Required GitHub Secrets
 
