@@ -1,5 +1,30 @@
-**/bin/
-**/obj/
-.git/
+# .dockerignore
+
+# Versionhallinta
+.git
+.gitignore
+
+# IDE-tiedostot
+.vs/
+.vscode/
 *.user
+*.suo
+
+# Build-tulosteet
+bin/
+obj/
+node_modules/
+
+# Docker-tiedostot
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Dokumentaatio
+README.md
+docs/
+
+# Ympäristömuuttujat (salaisuudet!)
+.env
+.env.local
 **/appsettings.Development.json
