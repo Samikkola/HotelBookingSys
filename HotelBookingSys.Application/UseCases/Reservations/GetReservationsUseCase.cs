@@ -30,28 +30,25 @@ public class GetReservationsUseCase
         if (filter is not null && filter.FromDate.HasValue && filter.ToDate.HasValue && filter.FromDate > filter.ToDate)
             return Result<IEnumerable<ReservationResponseDto>>.Failure(ErrorCode.Validation, "FromDate must be on or before ToDate.");
 
-        var reservationsTask = _reservationRepository.GetAllAsync(
+        // Retrieve reservations based on filters
+        var reservations = await _reservationRepository.GetAllAsync(
             filter?.CustomerId,
             filter?.RoomId,
             filter?.Status,
             filter?.FromDate,
             filter?.ToDate);
-        var roomsTask = _roomRepository.GetAllAsync();
-        // Wait for both tasks to complete
-        await Task.WhenAll(reservationsTask, roomsTask);
-
-        // Create a dictionary to quickly lookup room numbers by room ID
-        var reservations = reservationsTask.Result;
-        var rooms = roomsTask.Result.ToDictionary(r => r.Id, r => r.RoomNumber);
-
+        // Retrieve all rooms to map room numbers
+        var rooms = await _roomRepository.GetAllAsync();
+        // Create a dictionary to map room IDs to room numbers for efficient lookup
+        var roomMap = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
+        
         // Map reservations to DTOs, including room numbers
-        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, rooms)));
-
+        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, roomMap)));
     }
 
-    private ReservationResponseDto MapToDto(
+    private static ReservationResponseDto MapToDto(
         Reservation reservation,
-        IReadOnlyDictionary<Guid, int> rooms)
+        Dictionary<Guid, int> rooms)
     {
         return new ReservationResponseDto
         {
