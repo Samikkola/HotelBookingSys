@@ -4,6 +4,7 @@ services:
     container_name: hotelbookingsys-db
     environment:
       ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
       SA_PASSWORD: ${DB_PASSWORD}
     ports:
       - "1433:1433"
@@ -26,6 +27,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=${DB_NAME};User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;"
     ports:
       - "8080:8080"

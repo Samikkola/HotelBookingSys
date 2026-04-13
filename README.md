@@ -14,7 +14,6 @@ The system will be built using:
 * **.NET (ASP.NET Core Web API)**
 * **Clean Architecture**
 * **Entity Framework Core**
-* **Docker** 
 
 The goal is to design and implement a maintainable and scalable REST API for managing hotel customers, rooms, and reservations.
 
@@ -142,37 +141,48 @@ cd HotelBookingSys
 dotnet restore
 ```
 
-## Local development with Docker (recommended)
+## Local development with Docker
 
-Add .env file in project root:
+### Prerequisites
+- Docker Desktop installed and running
+- Ports `8080` (API) and `1433` (SQL Server) available
+
+### 1. Create local environment file
 ```bash
-# .env
-DB_NAME= hotelbooking-db
-DB_PASSWORD=`{your-password-here}`
+cp .env.example .env
 ```
 
+Windows PowerShell alternative:
+```powershell
+Copy-Item .env.example .env
+```
 
-Run API + SQL Server in containers:
+Then edit `.env` if needed:
+```env
+DB_NAME=hotelbooking-db
+DB_PASSWORD={yourStrongPasswordHere}
+```
 
+### 2. Start API + SQL Server
 ```bash
 docker compose up --build
 ```
 
-Then open:
-
+### 3. Open the API
 - Swagger: `http://localhost:8080/swagger`
-- Rooms endpoint: `http://localhost:8080/api/rooms`
 
 Notes:
+- The API uses `ASPNETCORE_ENVIRONMENT=Development` in compose.
+- Startup applies EF Core migrations and seeds initial data.
 
-- `docker-compose.yml` is for local development only.
-- SQL Server data is persisted in a named Docker volume.
-- The API applies migrations and seeds data automatically in `Development`.
-
-Stop services:
-
+### 4. Stop containers
 ```bash
 docker compose down
+```
+
+To also remove SQL data volume:
+```bash
+docker compose down -v
 ```
 
 ## Local development without Docker
@@ -243,4 +253,4 @@ Developed as part of a Software Architecture course final project.
 
 ---
 
-*Functional backend with Docker-based local development and SQL Server persistence.*
+*Functional backend with SQL Server persistence.*
