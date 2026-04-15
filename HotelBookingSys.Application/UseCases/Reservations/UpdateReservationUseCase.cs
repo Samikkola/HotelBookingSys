@@ -75,7 +75,9 @@ public class UpdateReservationUseCase
             CheckOutDate = reservation.CheckOutDate,
             NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString()
+            Status = reservation.Status.ToString(),
+            CreatedAt = reservation.CreatedAt,
+            UpdatedAt = reservation.UpdatedAt
         });
     }
 }

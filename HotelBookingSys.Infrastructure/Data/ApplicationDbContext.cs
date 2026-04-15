@@ -28,6 +28,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(50);
             entity.HasIndex(e => e.PhoneNumber).IsUnique();
             entity.Property(e => e.Notes).HasMaxLength(1000);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.UpdatedAt);
         });
 
         modelBuilder.Entity<Room>(entity =>
@@ -38,6 +40,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Type).HasConversion<string>().IsRequired();
             entity.Property(e => e.RoomCapacity).IsRequired();
             entity.Property(e => e.BasePrice).IsRequired().HasColumnType("decimal(18,2)");
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.UpdatedAt);
         });
 
         modelBuilder.Entity<Reservation>(entity =>

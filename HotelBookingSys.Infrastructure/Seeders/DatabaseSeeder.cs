@@ -1,7 +1,7 @@
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace HotelBookingSys.Infrastructure.Seeders;
 

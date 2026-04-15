@@ -90,7 +90,9 @@ public class CreateReservationUseCase
             CheckOutDate = reservation.CheckOutDate,
             NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString() ?? string.Empty
+            Status = reservation.Status.ToString() ?? string.Empty,
+            CreatedAt = reservation.CreatedAt,
+            UpdatedAt = reservation.UpdatedAt,
         };
     }
 }

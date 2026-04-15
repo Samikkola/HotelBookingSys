@@ -38,7 +38,9 @@ public class GetCustomerByIdUseCase
             LastName = customer.LastName,
             Email = customer.Email,
             Phone = customer.PhoneNumber,
-            Notes = customer.Notes?.ToString() ?? string.Empty
+            Notes = customer.Notes?.ToString() ?? string.Empty,
+            CreatedAt = customer.CreatedAt,
+            UpdatedAt = customer.UpdatedAt,
         };
     }
 }

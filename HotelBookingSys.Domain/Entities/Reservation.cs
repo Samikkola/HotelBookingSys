@@ -2,10 +2,8 @@
 
 namespace HotelBookingSys.Domain.Entities;
 
-public class Reservation
+public class Reservation : BaseEntity
 {
-    public Guid Id { get; private set; }
-
     // Foreign keys
     public Guid CustomerId { get; private set; }
     public Guid RoomId { get; private set; }
@@ -17,8 +15,6 @@ public class Reservation
 
     public decimal TotalPrice { get; private set; }
     public ReservationStatus Status { get; private set; }
-    public DateTime CreatedAt { get; private set; } //TODO: Make these as one Value Object?
-    public DateTime? UpdatedAt { get; private set; } //TODO: Make these as one Value Object?
 
     //Navigation properties TODO: Decide if to use these or not
     // public Customer Customer { get; private set; }
@@ -52,17 +48,14 @@ public class Reservation
         if (roomBasePrice < 0)
             throw new ArgumentException("Total price cannot be negative.", nameof(roomBasePrice));
 
-        Id = Guid.NewGuid();
         CustomerId = customerId;
         RoomId = roomId;
         CheckInDate = checkInDate;
         CheckOutDate = checkOutDate;
-        NumberOfGuests = numberOfGuests;
-        
+        NumberOfGuests = numberOfGuests;       
         CalculateTotalPrice(roomBasePrice); // Calculate TotalPrice based on room base price and reservation duration
         Status = ReservationStatus.Active; 
-        CreatedAt = DateTime.UtcNow;
-       
+        
     }
 
     
@@ -107,18 +100,18 @@ public class Reservation
     {
         if (Status != ReservationStatus.Active)
             throw new InvalidOperationException("Reservation is not active and cannot be cancelled.");
-       
-        UpdatedAt = DateTime.UtcNow;
+
         Status = ReservationStatus.Cancelled;
+        SetUpdatedAt();
     }
-    
+
     public void CompleteReservation()
         {
             if (Status != ReservationStatus.Active)
                 throw new InvalidOperationException("Reservation is not active and cannot be completed.");
 
-        UpdatedAt = DateTime.UtcNow;
         Status = ReservationStatus.Completed;
+        SetUpdatedAt();
     }
 
     /// <summary>
@@ -160,8 +153,8 @@ public class Reservation
         CheckInDate = newCheckInDate;
         CheckOutDate = newCheckOutDate;
         NumberOfGuests = numberOfGuests;
-        UpdatedAt = DateTime.UtcNow;
         CalculateTotalPrice(roomBasePrice);
+        SetUpdatedAt();
     }
 
     

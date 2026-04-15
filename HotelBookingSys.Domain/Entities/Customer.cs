@@ -4,9 +4,8 @@ using System.Text;
 
 namespace HotelBookingSys.Domain.Entities;
 
-public class Customer
+public class Customer : BaseEntity
 {
-    public Guid Id { get; private set; }
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;       // TODO: Consider refactoring Email                                                                                                                              .
@@ -38,7 +37,6 @@ public class Customer
         if (string.IsNullOrWhiteSpace(phoneNumber))
             throw new ArgumentException("Phone number is required.", nameof(phoneNumber));
 
-        Id = Guid.NewGuid();
         FirstName = firstName;
         LastName = lastName;
         Email = email;
@@ -79,6 +77,7 @@ public class Customer
         Email = email;
         PhoneNumber = phoneNumber;
         Notes = notes;
+        SetUpdatedAt();
     }
 
     //TODO: Add validation on email and phone (no duplicates)

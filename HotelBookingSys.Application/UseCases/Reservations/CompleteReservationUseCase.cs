@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
+using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -55,7 +56,9 @@ public class CompleteReservationUseCase
             CheckOutDate = reservation.CheckOutDate,
             NumberOfGuests = reservation.NumberOfGuests,
             TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString()
+            Status = reservation.Status.ToString(),
+            CreatedAt = reservation.CreatedAt,
+            UpdatedAt = reservation.UpdatedAt,
         });
     }
 }

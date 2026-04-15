@@ -55,7 +55,9 @@ public class UpdateCustomerUseCase
             LastName = customer.LastName,
             Email = customer.Email,
             Phone = customer.PhoneNumber,
-            Notes = customer.Notes ?? string.Empty
+            Notes = customer.Notes ?? string.Empty,
+            CreatedAt = customer.CreatedAt,
+            UpdatedAt = customer.UpdatedAt,
         };
     }
 }
