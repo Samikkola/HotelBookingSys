@@ -83,12 +83,31 @@ jobs:
       run: dotnet publish HotelBookingSys.API/HotelBookingSys.API.csproj -c Release -o ./publish
 
     # Apply EF Core migrations against Azure SQL before app deployment
+    # This step includes retry logic to handle cold start latency.
     - name: Run EF Core migrations
+      shell: bash
       run: |
-        dotnet tool install --global dotnet-ef --prerelease
-        dotnet ef database update --project HotelBookingSys.Infrastructure --startup-project HotelBookingSys.API
+        dotnet tool install --global dotnet-ef --version 10.*
+        echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+        success=false
+        for i in {1..5}; do
+          echo "Attempt $i to apply migrations..."
+
+          if dotnet ef database update -p HotelBookingSys.Infrastructure -s HotelBookingSys.API; then
+            success=true
+            break
+          fi
+
+          echo "Migration failed, probably DB is waking up. Retrying in 15 seconds..."
+          sleep 15
+        done
+
+        if [ "$success" != "true" ]; then
+          echo "EF Core migration failed after 5 attempts."
+          exit 1
+        fi
       env:
-        # Inject DB connection string as environment variable for the startup project
         ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
     # Deploy published output to Azure App Service
