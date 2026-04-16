@@ -22,7 +22,7 @@ public class GetAvailableRoomsUseCase
 
     /// <summary>
     /// Retrieves a list of available rooms for the specified check-in and check-out dates.
-    /// Fetches all rooms and overlapping reservations concurrently, then filters out rooms that are booked during the given date range.
+    /// Fetches all rooms and overlapping reservations, then filters out rooms that are booked during the given date range.
     /// Returns a Result containing the list of available RoomResponseDto or error information if the operation fails.
     /// </summary>
     /// <param name="checkInDate"></param>
@@ -32,14 +32,8 @@ public class GetAvailableRoomsUseCase
     {
         //TODO: check if dates are given(now returns all rooms if no dates are given) 
 
-        // Fetch everything needed concurrently
-        var roomsTask = _roomRepository.GetAllAsync();
-        var reservationsTask = _reservationRepository.GetAllOverlappingReservationsAsync(checkInDate, checkOutDate);
-        // Wait for both tasks to complete
-        await Task.WhenAll(roomsTask, reservationsTask);
-        // Get results from tasks
-        var rooms = roomsTask.Result;
-        var overlappingReservations = reservationsTask.Result;
+        var rooms = await _roomRepository.GetAllAsync();
+        var overlappingReservations = await _reservationRepository.GetAllOverlappingReservationsAsync(checkInDate, checkOutDate);
 
         // Filter using a HashSet of booked Room Ids for O(1) lookups
         var bookedRoomIds = overlappingReservations.Select(r => r.RoomId).ToHashSet();

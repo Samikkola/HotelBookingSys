@@ -49,9 +49,25 @@ public interface IReservationRepository
         DateOnly? fromDate = null,
         DateOnly? toDate = null);
 
-    Task <IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate);
+    Task<IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate);
 
     Task<IReadOnlyList<Reservation>> GetAllOverlappingReservationsAsync(DateOnly checkInDate, DateOnly checkOutDate);
+
+    /// <summary>
+    /// Retrieves active reservations overlapping the specified date range.
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<Reservation>> GetActiveByDateRangeAsync(DateOnly from, DateOnly to);
+
+    /// <summary>
+    /// Retrieves completed reservations for the specified year.
+    /// </summary>
+    /// <param name="year"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<Reservation>> GetCompletedByYearAsync(int year);
+
     Task<IReadOnlyList<Reservation>> GetActiveReservationsByDateRangeAsync(DateOnly from, DateOnly to);
 
     /// <summary>

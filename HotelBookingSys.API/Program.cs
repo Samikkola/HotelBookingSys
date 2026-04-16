@@ -1,4 +1,5 @@
 ﻿using HotelBookingSys.Application.UseCases.Customers;
+using HotelBookingSys.Application.UseCases.Analytics;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Application.UseCases.Rooms;
 using HotelBookingSys.Infrastructure.Data;
@@ -40,6 +41,9 @@ builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 builder.Services.AddScoped<CancelReservationUseCase>();
 builder.Services.AddScoped<UpdateReservationUseCase>();
 builder.Services.AddScoped<CompleteReservationUseCase>();
+builder.Services.AddScoped<GetOccupancyUseCase>();
+builder.Services.AddScoped<GetMonthlyRevenueUseCase>();
+builder.Services.AddScoped<GetPopularRoomTypesUseCase>();
 
 
 var app = builder.Build();
