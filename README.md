@@ -134,6 +134,7 @@ The project has a fully functional backend with all core features implemented:
 - Clean Architecture structure with Domain, Application, Infrastructure, API, and Tests layers
 - EF Core + SQL Server persistence with migrations and database seeding (30 rooms)
 - Use cases covering customer management, room availability, and reservation lifecycle (create, update, cancel, complete)
+- Analytics feature for management insights (occupancy rate, monthly revenue, popular room types)
 - Seasonal pricing logic and reservation overlap validation
 - Result Pattern with HTTP status mapping in controllers
 - DTOs for all request and response models

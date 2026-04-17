@@ -31,15 +31,11 @@ public class GetActiveReservationsByDateRangeUseCase
         if (from > to)
             return Result<IEnumerable<ReservationResponseDto>>.Failure(ErrorCode.Validation, "From date must be on or before To date.");
 
-        var reservationsTask = _reservationRepository.GetActiveReservationsByDateRangeAsync(from, to);
-        var roomsTask = _roomRepository.GetAllAsync();
+        var reservations = await _reservationRepository.GetActiveReservationsByDateRangeAsync(from, to);
+        var rooms = await _roomRepository.GetAllAsync();
+        var roomsById = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
 
-        await Task.WhenAll(reservationsTask, roomsTask);
-
-        var reservations = reservationsTask.Result;
-        var rooms = roomsTask.Result.ToDictionary(r => r.Id, r => r.RoomNumber);
-
-        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, rooms)));
+        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, roomsById)));
     }
 
     private static ReservationResponseDto MapToDto(Reservation reservation, IReadOnlyDictionary<Guid, int> rooms)

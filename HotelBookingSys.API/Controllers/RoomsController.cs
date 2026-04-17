@@ -1,4 +1,5 @@
-﻿using HotelBookingSys.Application.DTOs.RoomDtos;
+﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.DTOs.RoomDtos;
 using HotelBookingSys.Application.UseCases.Rooms;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +23,16 @@ public class RoomsController : BaseController
     }
 
     [HttpGet("available")]
-    public async Task<ActionResult<IEnumerable<RoomResponseDto>>> GetAvailableRooms([FromQuery] DateOnly checkInDate, [FromQuery] DateOnly checkOutDate)
+    public async Task<ActionResult<IEnumerable<RoomResponseDto>>> GetAvailableRooms([FromQuery] DateOnly? checkInDate, [FromQuery] DateOnly? checkOutDate)
     {
-        var result = await _getAvailableRoomsUseCase.ExecuteAsync(checkInDate, checkOutDate);
+        if(!checkInDate.HasValue || !checkOutDate.HasValue)
+        {   
+            return ToActionResult(Result<IEnumerable<RoomResponseDto>>.Failure(
+                ErrorCode.Validation, 
+                "Both checkInDate and checkOutDate query parameters are required."));
+        }
+
+        var result = await _getAvailableRoomsUseCase.ExecuteAsync(checkInDate.Value, checkOutDate.Value);
         return ToActionResult(result);
     }
 
