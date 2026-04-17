@@ -31,11 +31,43 @@ The solution follows **Clean Architecture principles**, where dependencies point
 ```
 HotelBookingSys.slnx
 
- ├── HotelBookingSys.Domain
- ├── HotelBookingSys.Application
- ├── HotelBookingSys.Infrastructure
+ ├── .github
+ │   └── workflows
  ├── HotelBookingSys.API
- └── HotelBookingSys.Tests
+ │   ├── Controllers
+ │   ├── Properties
+ │   └── Services
+ ├── HotelBookingSys.Application
+ │   ├── Common
+ │   │   └── Result
+ │   ├── DTOs
+ │   │   ├── AnalyticDtos
+ │   │   ├── CustomerDtos
+ │   │   ├── ReservationDtos
+ │   │   └── RoomDtos
+ │   └── UseCases
+ │       ├── Analytics
+ │       ├── Customers
+ │       ├── Reservations
+ │       └── Rooms
+ ├── HotelBookingSys.Domain
+ │   ├── Entities
+ │   ├── Enums
+ │   └── Interfaces
+ ├── HotelBookingSys.Infrastructure
+ │   ├── Data
+ │   ├── DepencyInjection
+ │   ├── Migrations
+ │   ├── Repositories
+ │   └── Seeders
+ ├── HotelBookingSys.Tests
+ │   ├── Application
+ │   │   ├── Customers
+ │   │   └── Reservations
+ │   └── Domain
+ ├── docker-compose.yml
+ ├── .env.example
+ └── README.md
 ```
 
 ---
@@ -107,6 +139,7 @@ The project has a fully functional backend with all core features implemented:
 - DTOs for all request and response models
 - Customer endpoints for lookup by email/phone, update, and delete
 - Reservation filtering support (`customerId`, `roomId`, `status`, `fromDate`, `toDate`)
+- Analytics endpoints implemented under `api/analytics`
 - GitHub Actions CI/CD pipeline (build, test, EF Core migration, Azure deployment)
 - Swagger UI integrated and functional
 - Domain unit tests for Reservation, Room and Customer
@@ -228,7 +261,7 @@ The repository includes a GitHub Actions workflow at `.github/workflows/dotnet.y
 
 - On `pull_request`: runs build and tests.
 - On `push` to `main`/`master`: runs build + tests 
-	- If successfull, checks application code for changes and executes EF Core migrations against Azure SQL, and deploys to Azure App Service, if needed.
+	- If successful, checks application code for changes and executes EF Core migrations against Azure SQL, and deploys to Azure App Service, if needed.
 
 ### Required GitHub Secrets
 
