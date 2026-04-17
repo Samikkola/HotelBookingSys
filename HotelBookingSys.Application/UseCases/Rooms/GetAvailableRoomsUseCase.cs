@@ -40,7 +40,8 @@ public class GetAvailableRoomsUseCase
         // Return rooms that are not in the bookedRoomIds set, and map to DTOs
         var availableRooms = rooms
             .Where(room => !bookedRoomIds.Contains(room.Id))
-            .Select(MapToDto);
+            .Select(MapToDto)
+            .OrderBy(r => r.RoomNumber);
 
         return Result<IEnumerable<RoomResponseDto>>.Success(availableRooms);
     }

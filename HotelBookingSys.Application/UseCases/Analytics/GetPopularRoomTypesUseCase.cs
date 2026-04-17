@@ -37,7 +37,15 @@ public class GetPopularRoomTypesUseCase
             .Select(group => new RoomTypePopularityDto
             {
                 RoomType = group.Key,
-                BookingCount = group.Count()
+                BookingCount = group.Count(),
+
+                TotalBookedNights = group.Sum(r =>
+                {
+                    var checkIn = r.CheckInDate < from ? from : r.CheckInDate;
+                    var checkOut = r.CheckOutDate > to ? to : r.CheckOutDate;
+
+                    return (checkOut.DayNumber - checkIn.DayNumber);
+                })                              
             })
             .OrderByDescending(x => x.BookingCount)
             .ToList();

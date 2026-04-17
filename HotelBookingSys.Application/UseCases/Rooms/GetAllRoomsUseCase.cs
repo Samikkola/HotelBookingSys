@@ -25,7 +25,10 @@ public class GetAllRoomsUseCase
     public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync()
     {
         var rooms = await _roomRepository.GetAllAsync();
-        return Result<IEnumerable<RoomResponseDto>>.Success(rooms.Select(MapToDto).ToList());
+        return Result<IEnumerable<RoomResponseDto>>
+            .Success(rooms.Select(MapToDto)
+            .OrderBy(r => r.RoomNumber)
+            .ToList());
     }
 
     private RoomResponseDto MapToDto(Room room)
