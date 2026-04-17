@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelBookingSys.API.Controllers;
 
 
-/// <summary>
-/// Creates a new customer.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CustomersController : BaseController

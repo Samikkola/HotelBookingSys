@@ -1,10 +1,10 @@
-﻿using HotelBookingSys.Domain.Enums;
+﻿
 
 namespace HotelBookingSys.Application.DTOs.RoomDtos;
 
 public class RoomResponseDto
 {
-    // public Guid Id { get; set; } TODO: do I need this ?
+    public Guid Id { get; set; }
 
     public int RoomNumber { get; set; }
 
@@ -13,4 +13,5 @@ public class RoomResponseDto
     public int RoomCapacity { get; set; }
 
     public decimal BasePrice { get; set; }
+    public List<RoomImageResponseDto> Images { get; set; } = new();
 }

@@ -8,9 +8,7 @@ using HotelBookingSys.Domain.Enums;
 
 namespace HotelBookingSys.API.Controllers;
 
-/// <summary>
-/// Creates a reservation for a specified customer and room within a given date range.
-/// </summary>
+
 [ApiController]
 [Route("api/[controller]")]
 public class ReservationsController : BaseController

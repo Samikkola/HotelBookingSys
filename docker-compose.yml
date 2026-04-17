@@ -31,6 +31,11 @@ services:
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=${DB_NAME};User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;"
     ports:
       - "8080:8080"
+    volumes: 
+      - room-images:/app/wwwroot/images/rooms
+  
+    
 
 volumes:
   sqlserver-data:
+  room-images:

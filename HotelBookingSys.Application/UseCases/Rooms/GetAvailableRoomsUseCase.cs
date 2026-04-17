@@ -1,8 +1,9 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.RoomDtos;
-using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
+using HotelBookingSys.Domain.Interfaces;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,10 +51,20 @@ public class GetAvailableRoomsUseCase
     {
         return new RoomResponseDto
         {
+            Id = room.Id,
             RoomNumber = room.RoomNumber,
             RoomCapacity = room.RoomCapacity,
             Type = room.Type.ToString(),
             BasePrice = room.BasePrice,
+
+            Images = room.Images
+            .Select(i => new RoomImageResponseDto
+            {
+                Id = i.Id,
+                Url = i.Url,           
+            })
+            .ToList()
+
         };
     }
 }

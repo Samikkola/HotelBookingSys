@@ -43,7 +43,7 @@ public class DeleteRoomImageUseCase
             return Result.Failure(ErrorCode.NotFound, "Image not found.");
 
         if (image.RoomId != roomId)
-            return Result.Failure(ErrorCode.Validation, "Image does not belong to the specified room.");
+            return Result.Failure(ErrorCode.Conflict, "Image does not belong to the specified room.");
 
         await _imageStorageService.DeleteAsync(image.FileName);
         await _imageRepository.DeleteAsync(image);

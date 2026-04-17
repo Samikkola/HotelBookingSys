@@ -15,6 +15,7 @@ RUN dotnet publish "HotelBookingSys.API/HotelBookingSys.API.csproj" -c Release -
 # Build the runtime image (smaller image for running the application)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
+RUN mkdir -p /app/wwwroot/images/rooms
 COPY --from=build /app/publish .
 
 # Set the entry point for the application

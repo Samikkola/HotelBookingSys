@@ -16,7 +16,9 @@ namespace HotelBookingSys.Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Room>> GetAllAsync()
         {
-            return await _dbContext.Rooms.ToListAsync();
+            return await _dbContext.Rooms
+                .Include(r=>r.Images)
+                .ToListAsync();
         }
 
         public async Task<int> CountAsync()
@@ -26,7 +28,7 @@ namespace HotelBookingSys.Infrastructure.Repositories
 
         public async Task<Room?> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Rooms.FindAsync(id);
+            return await _dbContext.Rooms.Include(r => r.Images).FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Room?> GetByRoomNumberAsync(int roomNumber)

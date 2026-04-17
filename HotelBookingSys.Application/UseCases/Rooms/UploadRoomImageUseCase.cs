@@ -49,6 +49,10 @@ public class UploadRoomImageUseCase
             return Result<RoomImageDto>.Failure(ErrorCode.NotFound, "Room not found.");
 
         var storedFileName = $"{Guid.NewGuid():N}_{Path.GetFileName(fileName)}";
+
+        if (fileStream.CanSeek)
+            fileStream.Position = 0;
+
         var url = await _imageStorageService.UploadAsync(fileStream, storedFileName, contentType);
 
         RoomImage image;
