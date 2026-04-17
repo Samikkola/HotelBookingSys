@@ -45,8 +45,23 @@ public class DeleteRoomImageUseCase
         if (image.RoomId != roomId)
             return Result.Failure(ErrorCode.Conflict, "Image does not belong to the specified room.");
 
-        await _imageStorageService.DeleteAsync(image.FileName);
-        await _imageRepository.DeleteAsync(image);
+        try
+        {
+            await _imageStorageService.DeleteAsync(image.FileName);
+        }
+        catch (Exception)
+        {
+            return Result.Failure(ErrorCode.Unexpected, "Failed to delete image from storage.");
+        }
+
+        try
+        {
+            await _imageRepository.DeleteAsync(image);
+        }
+        catch (Exception)
+        {
+            return Result.Failure(ErrorCode.Unexpected, "Failed to delete image metadata.");
+        }
 
         return Result.Success();
     }

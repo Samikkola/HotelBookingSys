@@ -53,7 +53,15 @@ public class UploadRoomImageUseCase
         if (fileStream.CanSeek)
             fileStream.Position = 0;
 
-        var url = await _imageStorageService.UploadAsync(fileStream, storedFileName, contentType);
+        string url;
+        try
+        {
+            url = await _imageStorageService.UploadAsync(fileStream, storedFileName, contentType);
+        }
+        catch (Exception)
+        {
+            return Result<RoomImageDto>.Failure(ErrorCode.Unexpected, "Failed to upload image to storage.");
+        }
 
         RoomImage image;
         try
@@ -65,7 +73,22 @@ public class UploadRoomImageUseCase
             return Result<RoomImageDto>.Failure(ErrorCode.Validation, ex.Message);
         }
 
-        await _imageRepository.AddAsync(image);
+        try
+        {
+            await _imageRepository.AddAsync(image);
+        }
+        catch (Exception)
+        {
+            try
+            {
+                await _imageStorageService.DeleteAsync(image.FileName);
+            }
+            catch
+            {
+            }
+
+            return Result<RoomImageDto>.Failure(ErrorCode.Unexpected, "Failed to save image metadata.");
+        }
 
         return Result<RoomImageDto>.Success(new RoomImageDto
         {

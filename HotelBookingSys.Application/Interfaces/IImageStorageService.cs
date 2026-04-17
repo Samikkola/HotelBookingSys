@@ -15,7 +15,7 @@ public interface IImageStorageService
     Task<string> UploadAsync(Stream fileStream, string fileName, string contentType);
 
     /// <summary>
-    /// .Deletes an image file from the underlying storage provider
+    /// Deletes an image file from the underlying storage provider.
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
