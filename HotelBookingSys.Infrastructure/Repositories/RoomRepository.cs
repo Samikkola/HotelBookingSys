@@ -14,9 +14,14 @@ namespace HotelBookingSys.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Room>> GetAllAsync()
+        public async Task<IReadOnlyList<Room>> GetAllAsync()
         {
             return await _dbContext.Rooms.ToListAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _dbContext.Rooms.CountAsync();
         }
 
         public async Task<Room?> GetByIdAsync(Guid id)

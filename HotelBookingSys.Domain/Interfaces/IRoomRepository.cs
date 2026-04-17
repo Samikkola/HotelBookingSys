@@ -7,7 +7,9 @@ public interface IRoomRepository
 {
     Task<Room?> GetByRoomNumberAsync(int roomNumber);
 
-    Task<IEnumerable<Room>> GetAllAsync();   
+    Task<IReadOnlyList<Room>> GetAllAsync();
+
+    Task<int> CountAsync();
 
     Task<Room?> GetByIdAsync(Guid id);
 
