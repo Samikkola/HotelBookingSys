@@ -1,7 +1,7 @@
-using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.UseCases.Analytics;
 using HotelBookingSys.Application.Common.Result;
 using Microsoft.AspNetCore.Mvc;
+using HotelBookingSys.Application.DTOs.AnalyticDtos;
 
 namespace HotelBookingSys.API.Controllers;
 
@@ -35,6 +35,7 @@ public class AnalyticsController : BaseController
     [HttpGet("occupancy")]
     public async Task<ActionResult<OccupancyDto>> GetOccupancy([FromQuery] DateOnly? from, [FromQuery] DateOnly? to)
     {
+        
         if (!from.HasValue || !to.HasValue)
         {
             return ToActionResult(Result<OccupancyDto>.Failure(

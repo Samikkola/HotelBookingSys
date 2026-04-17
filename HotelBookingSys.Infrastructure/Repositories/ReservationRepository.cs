@@ -61,9 +61,10 @@ namespace HotelBookingSys.Infrastructure.Repositories
         public async Task<IReadOnlyList<Reservation>> GetActiveByDateRangeAsync(DateOnly from, DateOnly to)
         {
             return await _dbContext.Reservations
-                .Where(r => r.Status == ReservationStatus.Active &&
-                            r.CheckInDate <= to &&
-                            r.CheckOutDate >= from)
+                .Where(r => (r.Status == ReservationStatus.Active || r.Status == ReservationStatus.Completed)
+                            &&
+                            r.CheckInDate < to &&
+                            r.CheckOutDate > from)
                 .ToListAsync();
         }
 

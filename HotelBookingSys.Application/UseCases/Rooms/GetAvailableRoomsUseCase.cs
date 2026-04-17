@@ -30,8 +30,7 @@ public class GetAvailableRoomsUseCase
     /// <returns></returns>
     public async Task<Result<IEnumerable<RoomResponseDto>>> ExecuteAsync(DateOnly checkInDate, DateOnly checkOutDate)
     {
-        //TODO: check if dates are given(now returns all rooms if no dates are given) 
-
+   
         var rooms = await _roomRepository.GetAllAsync();
         var overlappingReservations = await _reservationRepository.GetAllOverlappingReservationsAsync(checkInDate, checkOutDate);
 

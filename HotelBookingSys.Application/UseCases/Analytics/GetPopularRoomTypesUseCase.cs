@@ -1,6 +1,6 @@
-using HotelBookingSys.Application.DTOs;
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Domain.Interfaces;
+using HotelBookingSys.Application.DTOs.AnalyticDtos;
 
 namespace HotelBookingSys.Application.UseCases.Analytics;
 
