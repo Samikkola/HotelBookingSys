@@ -1,4 +1,4 @@
-﻿using HotelBookingSys.Application.UseCases.Customers;
+using HotelBookingSys.Application.UseCases.Customers;
 using HotelBookingSys.Application.UseCases.Analytics;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Application.UseCases.Rooms;
@@ -6,8 +6,6 @@ using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
 using HotelBookingSys.Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,21 +42,22 @@ builder.Services.AddScoped<CompleteReservationUseCase>();
 builder.Services.AddScoped<GetOccupancyUseCase>();
 builder.Services.AddScoped<GetMonthlyRevenueUseCase>();
 builder.Services.AddScoped<GetPopularRoomTypesUseCase>();
-
+builder.Services.AddScoped<UploadRoomImageUseCase>();
+builder.Services.AddScoped<DeleteRoomImageUseCase>();
 
 var app = builder.Build();
 
 //Swagger to test endpoints also in AZURE
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseStaticFiles();
 
 // Apply migrations and seed the database on startup
 if (app.Environment.IsDevelopment())
-{ 
+{
     // Automatically apply migrations and seed the database in development
     using (var scope = app.Services.CreateScope())
-    {        
+    {
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         context.Database.Migrate();
         DatabaseSeeder.Seed(context);
@@ -66,8 +65,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-   // In production, seed the rooms and a test customer, seeder checks if they alrady exists
-   using (var scope = app.Services.CreateScope())
+    // In production, seed the rooms and a test customer, seeder checks if they alrady exists
+    using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         DatabaseSeeder.Seed(context);
