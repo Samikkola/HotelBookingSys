@@ -1,12 +1,17 @@
+using System.Text;
 using HotelBookingSys.Application.UseCases.Customers;
 using HotelBookingSys.Application.UseCases.Analytics;
+using HotelBookingSys.Application.UseCases.Auth;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Application.UseCases.Rooms;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
 using HotelBookingSys.Infrastructure.Seeders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,16 +23,73 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Connection string 'DefaultConnection' is missing or empty. Configure it via appsettings or environment variable ConnectionStrings__DefaultConnection.");
 }
 
+var jwtSecret = builder.Configuration["Jwt:Secret"];
+if (string.IsNullOrWhiteSpace(jwtSecret))
+    throw new InvalidOperationException("JWT secret is missing.");
+
 //Add contorllers, swagger and infrastructure services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token. Example: eyJhbGci..."
+    });
+
+    c.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+{
+    {
+        new OpenApiSecuritySchemeReference("Bearer"),
+        new List<string>()
+    }
+});
+
+});
 //Add health checks, including a custom check for database connectivity
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>("database");
 builder.Services.AddInfrastructure(connectionString);
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSecret))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("Token validated successfully");
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 //Add use cases
+builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<CreateReservationUseCase>();
 builder.Services.AddScoped<CreateCustomerUseCase>();
 builder.Services.AddScoped<GetCustomerByIdUseCase>();
@@ -52,10 +114,16 @@ builder.Services.AddScoped<DeleteRoomImageUseCase>();
 
 var app = builder.Build();
 
-//Swagger to test endpoints also in AZURE
 app.UseSwagger();
-app.UseSwaggerUI();
+// Enable "Persist Authorization" in Swagger UI to allow users to stay logged in while testing endpoints
+app.UseSwaggerUI(c =>
+{
+    c.ConfigObject.AdditionalItems["persistAuthorization"] = true;
+});
 app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Apply migrations and seed the database on startup
 if (app.Environment.IsDevelopment())
@@ -98,5 +166,5 @@ app.MapHealthChecks("/health", new HealthCheckOptions
         };
         await context.Response.WriteAsJsonAsync(result);
     }
-});
+}).AllowAnonymous();
 app.Run();
