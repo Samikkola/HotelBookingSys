@@ -117,6 +117,10 @@ Swagger UI:
 - `http://localhost:5122/swagger`
 - `http://localhost:8080/swagger`
 
+Database heatlhcheck:
+- `http://localhost:5122/health`
+- `http://localhost:8080/health`
+
 ### Main Endpoint Groups
 
 - `api/customers`

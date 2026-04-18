@@ -5,7 +5,9 @@ using HotelBookingSys.Application.UseCases.Rooms;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
 using HotelBookingSys.Infrastructure.Seeders;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//Add health checks, including a custom check for database connectivity
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("database");
 builder.Services.AddInfrastructure(connectionString);
 
 //Add use cases
@@ -74,4 +79,24 @@ else
 }
 
 app.MapControllers();
+// Configuration for the health check endpoint to return a detailed JSON response
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var result = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            }),
+            duration = report.TotalDuration
+        };
+        await context.Response.WriteAsJsonAsync(result);
+    }
+});
 app.Run();
