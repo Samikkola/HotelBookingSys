@@ -22,7 +22,7 @@ public class AzureBlobStorageService : IImageStorageService
     /// <returns></returns>
     public async Task<string> UploadAsync(Stream fileStream, string fileName, string contentType)
     {
-        await _containerClient.CreateIfNotExistsAsync();
+        await _containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
         var blobName = Path.GetFileName(fileName);
         var blobClient = _containerClient.GetBlobClient(blobName);
