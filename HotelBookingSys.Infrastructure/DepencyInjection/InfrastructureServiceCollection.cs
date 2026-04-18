@@ -34,6 +34,8 @@ public static class InfrastructureServiceCollection
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IImageRepository, ImageRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
