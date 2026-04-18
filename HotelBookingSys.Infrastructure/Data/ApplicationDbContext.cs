@@ -8,6 +8,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<Reservation> Reservations => Set<Reservation>();
+    public DbSet<RoomImage> RoomImages => Set<RoomImage>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -40,6 +41,20 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Type).HasConversion<string>().IsRequired();
             entity.Property(e => e.RoomCapacity).IsRequired();
             entity.Property(e => e.BasePrice).IsRequired().HasColumnType("decimal(18,2)");
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.UpdatedAt);
+
+            entity.HasMany(e => e.Images)
+                .WithOne(e => e.Room)
+                .HasForeignKey(e => e.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<RoomImage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Url).IsRequired().HasMaxLength(1000);
+            entity.Property(e => e.FileName).IsRequired().HasMaxLength(255);
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.UpdatedAt);
         });

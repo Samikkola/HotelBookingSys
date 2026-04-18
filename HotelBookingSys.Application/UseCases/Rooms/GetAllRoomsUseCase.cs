@@ -35,10 +35,19 @@ public class GetAllRoomsUseCase
     {
         return new RoomResponseDto
         {
+            Id = room.Id,
             RoomNumber = room.RoomNumber,
             Type = room.Type.ToString(),
             RoomCapacity = room.RoomCapacity,
-            BasePrice = room.BasePrice
+            BasePrice = room.BasePrice,
+
+            Images = room.Images
+            .Select(i => new RoomImageResponseDto
+            {
+                Id = i.Id,
+                Url = i.Url
+            })
+            .ToList()
         };
     }
 }

@@ -9,6 +9,7 @@ public class Room : BaseEntity
     public RoomType Type { get; private set; }
     public int RoomCapacity { get; private set; }
     public decimal BasePrice { get; private set; }
+    public ICollection<RoomImage> Images { get; private set; } = new List<RoomImage>();
 
     //Navigation property?
 
