@@ -22,8 +22,16 @@ public class GetReservationsUseCaseTests
         var reservation = new Reservation(Guid.NewGuid(), room.Id, new DateOnly(2026, 2, 10), new DateOnly(2026, 2, 12), 1, room.RoomCapacity, room.BasePrice);
 
         reservationRepo
-            .Setup(r => r.GetReservationsAsync(null, null, null, null, null, 1, 20))
+            .Setup(r => r.GetReservationsAsync(
+                It.IsAny<Guid?>(),
+                It.IsAny<Guid?>(),
+                It.IsAny<ReservationStatus?>(),
+                It.IsAny<DateOnly?>(),
+                It.IsAny<DateOnly?>(),
+                It.IsAny<int>(),
+                It.IsAny<int>()))
             .ReturnsAsync((new List<Reservation> { reservation }, 1));
+
         roomRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Room> { room });
 
         var useCase = new GetReservationsUseCase(reservationRepo.Object, roomRepo.Object);
@@ -48,8 +56,16 @@ public class GetReservationsUseCaseTests
         var reservation = new Reservation(Guid.NewGuid(), room.Id, new DateOnly(2026, 2, 10), new DateOnly(2026, 2, 12), 1, room.RoomCapacity, room.BasePrice);
 
         reservationRepo
-            .Setup(r => r.GetReservationsAsync(reservation.CustomerId, room.Id, ReservationStatus.Active, new DateOnly(2026, 2, 1), new DateOnly(2026, 2, 28), 1, 20))
+            .Setup(r => r.GetReservationsAsync(
+                It.IsAny<Guid?>(),
+                It.IsAny<Guid?>(),
+                It.IsAny<ReservationStatus?>(),
+                It.IsAny<DateOnly?>(),
+                It.IsAny<DateOnly?>(),
+                It.IsAny<int>(),
+                It.IsAny<int>()))
             .ReturnsAsync((new List<Reservation> { reservation }, 1));
+
         roomRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Room> { room });
 
         var useCase = new GetReservationsUseCase(reservationRepo.Object, roomRepo.Object);
