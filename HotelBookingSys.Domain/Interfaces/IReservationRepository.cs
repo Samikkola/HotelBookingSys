@@ -42,12 +42,14 @@ public interface IReservationRepository
     /// <param name="fromDate"></param>
     /// <param name="toDate"></param>
     /// <returns></returns>
-    Task<IEnumerable<Reservation>> GetAllAsync(
+    Task<(IEnumerable<Reservation> Items, int TotalCount)> GetReservationsAsync(
         Guid? customerId = null,
         Guid? roomId = null,
         ReservationStatus? status = null,
         DateOnly? fromDate = null,
-        DateOnly? toDate = null);
+        DateOnly? toDate = null,
+        int page = 1,
+        int pageSize = 20);
 
     Task<IReadOnlyList<Reservation>> GetOverlappingReservationsByRoomIdAsync(Guid roomId, DateOnly checkInDate, DateOnly checkOutDate);
 

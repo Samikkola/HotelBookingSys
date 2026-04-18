@@ -1,4 +1,5 @@
 ﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HotelBookingSys.Application.UseCases.Reservations;
@@ -84,12 +85,14 @@ public class ReservationsController : BaseController
     /// <param name="toDate"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ReservationResponseDto>>> GetReservations(
+    public async Task<ActionResult<PagedResult<ReservationResponseDto>>> GetReservations(
         [FromQuery] Guid? customerId,
         [FromQuery] Guid? roomId,
         [FromQuery] ReservationStatus? status,
         [FromQuery] DateOnly? fromDate,
-        [FromQuery] DateOnly? toDate)
+        [FromQuery] DateOnly? toDate,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
     {
         var filter = new ReservationFilterDto
         {
@@ -100,7 +103,7 @@ public class ReservationsController : BaseController
             ToDate = toDate
         };
 
-        var result = await _getReservationsUseCase.ExecuteAsync(filter);
+        var result = await _getReservationsUseCase.ExecuteAsync(filter, page, pageSize);
         return ToActionResult(result);
     }
 

@@ -31,12 +31,14 @@ namespace HotelBookingSys.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Reservation>> GetAllAsync(
+        public async Task<(IEnumerable<Reservation> Items, int TotalCount)> GetReservationsAsync(
             Guid? customerId = null,
             Guid? roomId = null,
             ReservationStatus? status = null,
             DateOnly? fromDate = null,
-            DateOnly? toDate = null)
+            DateOnly? toDate = null,
+            int page = 1,
+            int pageSize = 20)
         {
             var query = _dbContext.Reservations.AsQueryable();
 
@@ -55,7 +57,14 @@ namespace HotelBookingSys.Infrastructure.Repositories
             if (toDate.HasValue)
                 query = query.Where(r => r.CheckInDate <= toDate.Value);
 
-            return await query.ToListAsync();
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<IReadOnlyList<Reservation>> GetActiveByDateRangeAsync(DateOnly from, DateOnly to)

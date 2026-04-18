@@ -1,4 +1,5 @@
 using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.Common;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
 using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
@@ -25,25 +26,41 @@ public class GetReservationsUseCase
     /// </summary>
     /// <param name="filter"></param>
     /// <returns></returns>
-    public async Task<Result<IEnumerable<ReservationResponseDto>>> ExecuteAsync(ReservationFilterDto? filter = null)
+    public async Task<Result<PagedResult<ReservationResponseDto>>> ExecuteAsync(ReservationFilterDto? filter = null, int page = 1, int pageSize = 10)
     {
+        if (page < 1)
+            return Result<PagedResult<ReservationResponseDto>>.Failure(ErrorCode.Validation, "Page must be at least 1.");
+
+        if (pageSize < 1 || pageSize > 100)
+            return Result<PagedResult<ReservationResponseDto>>.Failure(ErrorCode.Validation, "PageSize must be between 1 and 100.");
+
         if (filter is not null && filter.FromDate.HasValue && filter.ToDate.HasValue && filter.FromDate > filter.ToDate)
-            return Result<IEnumerable<ReservationResponseDto>>.Failure(ErrorCode.Validation, "FromDate must be on or before ToDate.");
+            return Result<PagedResult<ReservationResponseDto>>.Failure(ErrorCode.Validation, "FromDate must be on or before ToDate.");
 
         // Retrieve reservations based on filters
-        var reservations = await _reservationRepository.GetAllAsync(
+        var (reservations, totalCount) = await _reservationRepository.GetReservationsAsync(
             filter?.CustomerId,
             filter?.RoomId,
             filter?.Status,
             filter?.FromDate,
-            filter?.ToDate);
+            filter?.ToDate,
+            page,
+            pageSize);
         // Retrieve all rooms to map room numbers
         var rooms = await _roomRepository.GetAllAsync();
         // Create a dictionary to map room IDs to room numbers for efficient lookup
         var roomMap = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
         
         // Map reservations to DTOs, including room numbers
-        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, roomMap)));
+        var items = reservations.Select(r => MapToDto(r, roomMap)).ToList();
+
+        return Result<PagedResult<ReservationResponseDto>>.Success(new PagedResult<ReservationResponseDto>
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        });
     }
 
     private static ReservationResponseDto MapToDto(
