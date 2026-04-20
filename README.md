@@ -16,6 +16,8 @@ The API supports:
 - reservation lifecycle handling
 - analytics reporting
 - room image upload and storage
+- JWT-based authentication and role-based authorization
+- health check endpoint for production readiness
 
 ### Tech Stack
 
@@ -55,8 +57,10 @@ HotelBookingSys.slnx
 │   └── workflows/
 ├── HotelBookingSys.API/
 │   ├── Controllers/
+│   ├── HealthChecks/
+│   ├── Middleware/
 │   ├── Properties/
-│   
+│   └── Swagger/
 ├── HotelBookingSys.Application/
 │   ├── Common/
 │   │   └── Result/
@@ -97,10 +101,16 @@ HotelBookingSys.slnx
 - Clean Architecture structure with Result Pattern response handling
 - Customer CRUD + lookup by email/phone
 - Room listing and availability search
-- Reservation create/update/cancel/complete flows
+- Reservation create/update (PATCH)/cancel/complete flows
+- Overlapping reservations are prevented
+- Reservation total price is calculated automatically
+- Seasonal pricing implemented (summer + Christmas periods)
 - Reservation filtering (`customerId`, `roomId`, `status`, `fromDate`, `toDate`)
-- Analytics endpoints
-- Room image management
+- Analytics endpoints (`occupancy`, `revenue`, `popular-room-types`)
+- Room image management (upload/delete) with validation (type + max size)
+- Persistent SQL Server storage via EF Core
+- JWT authentication and role-based authorization
+- Public `/health` endpoint with database connectivity check
 - EF Core migrations and startup seeding
 - Swagger UI for endpoint testing
 - CI/CD with build, test, migration, and Azure deployment stages
@@ -127,6 +137,21 @@ Database heatlhcheck:
 - `api/rooms`
 - `api/reservations`
 - `api/analytics`
+- `api/auth`
+
+### Room Image Endpoints
+
+- `POST /api/rooms/{id}/images`
+  - `multipart/form-data`
+  - allowed: `jpg`, `jpeg`, `png`, `webp`
+  - max size: `5 MB`
+- `DELETE /api/rooms/{id}/images/{imageId}`
+
+### Reservation Update Endpoint
+
+- `PATCH /api/reservations/{id}`
+  - partial update fields: room, guest count, check-in, check-out
+  - reruns overlap, capacity, and pricing rules
 
 
 > In Development, local image files are served from `wwwroot/images/rooms`.
@@ -223,7 +248,41 @@ Set these values in Azure App Service Configuration:
 
 Room image storage strategy:
 - `Development` → local file storage (`wwwroot/images/rooms`)
-- non-Development (e.g. Production) → Azure Blob Storage (coming soon...)
+- non-Development (e.g. Production) → Azure Blob Storage
+
+---
+
+## 🎯 Arviointiperusteet (Acceptance Criteria Coverage)
+
+### Hyväksytty
+
+- Toimiva REST API huoneiden, asiakkaiden ja varausten hallintaan (CRUD)
+- Päällekkäiset varaukset estetään
+- Vapaat huoneet voi hakea aikavälille
+- Kokonaishinta lasketaan automaattisesti
+- Tiedot tallentuvat tietokantaan pysyvästi
+- API on testattavissa Swaggerin kautta
+
+### Hyvä
+
+- Selkeä arkkitehtuuri ja vastuunjako (Clean Architecture)
+- Syötevalidointi ja virheenkäsittely Result Patternilla
+- Varausten muokkaus toimii (`PATCH /api/reservations/{id}`)
+- Järjestelmä tukee kuvia (upload/delete + URL:t vastauksissa)
+- Tilastot ja raportit (`occupancy`, `revenue`, `popular-room-types`)
+- Yli 15 yksikkötestiä keskeiselle liiketoimintalogiikalle
+- API-dokumentaatio (Swagger/OpenAPI)
+- README sisältää arkkitehtuurin, käynnistysohjeet ja API-käytön
+
+### Kiitettävä
+
+- Sesonkihinnoittelu toteutettu
+- Autentikointi ja auktorisointi (JWT + roolit)
+- Huonekuvien tallennus/hallinta osana kokonaisuutta
+- Yli 25 yksikkötestiä, riippuvuudet mockattu
+- Docker-tuki
+- Siisti, nimetty ja ylläpidettävä rakenne
+- Edistyneet ratkaisut: health check, CI/CD, Azure deploy + migrations
 
 ---
 
