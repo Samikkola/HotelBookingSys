@@ -11,6 +11,8 @@ on:
   # Also run CI validation for pull requests targeting main branches
   pull_request:
     branches: [ "master", "main" ]
+  # Allow manual triggering of the workflow from GitHub UI
+  workflow_dispatch:
 
 jobs:
   # Detect if deploy-relevant files changed
