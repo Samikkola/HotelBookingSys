@@ -4,6 +4,7 @@ using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Application.UseCases.Customers;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HotelBookingSys.Tests.Application.Customers;
@@ -14,9 +15,10 @@ public class CreateCustomerUseCaseTests
     public async Task ExecuteAsync_WhenEmailAlreadyExists_ReturnsConflict()
     {
         var repository = new Mock<ICustomerRepository>();
+        var logger = new Mock<ILogger<CreateCustomerUseCase>>();
         repository.Setup(r => r.EmailExistsAsync("jane@example.com", null)).ReturnsAsync(true);
 
-        var useCase = new CreateCustomerUseCase(repository.Object);
+        var useCase = new CreateCustomerUseCase(repository.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(new CreateCustomerDto
         {
@@ -37,10 +39,11 @@ public class CreateCustomerUseCaseTests
     public async Task ExecuteAsync_WhenPhoneAlreadyExists_ReturnsConflict()
     {
         var repository = new Mock<ICustomerRepository>();
+        var logger = new Mock<ILogger<CreateCustomerUseCase>>();
         repository.Setup(r => r.EmailExistsAsync("jane@example.com", null)).ReturnsAsync(false);
         repository.Setup(r => r.PhoneExistsAsync("123456", null)).ReturnsAsync(true);
 
-        var useCase = new CreateCustomerUseCase(repository.Object);
+        var useCase = new CreateCustomerUseCase(repository.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(new CreateCustomerDto
         {

@@ -21,4 +21,8 @@
     <ProjectReference Include="..\HotelBookingSys.Infrastructure\HotelBookingSys.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="HealthChecks\" />
+  </ItemGroup>
+
 </Project>
