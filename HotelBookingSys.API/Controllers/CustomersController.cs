@@ -57,7 +57,6 @@ public class CustomersController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [AllowAnonymous]
     public async Task<ActionResult<CustomerResponseDto>> CreateCustomer([FromBody]CreateCustomerDto request)
     {
         var result = await _createCustomerUseCase.ExecuteAsync(request);
