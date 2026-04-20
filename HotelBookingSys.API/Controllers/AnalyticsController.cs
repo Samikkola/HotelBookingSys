@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.UseCases.Analytics;
 using HotelBookingSys.Application.Common.Result;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HotelBookingSys.Application.DTOs.AnalyticDtos;
 
@@ -10,6 +11,7 @@ namespace HotelBookingSys.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/analytics")]
+
 public class AnalyticsController : BaseController
 {
     private readonly GetOccupancyUseCase _getOccupancyUseCase;

@@ -1,6 +1,7 @@
 ﻿using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.RoomDtos;
 using HotelBookingSys.Application.UseCases.Rooms;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

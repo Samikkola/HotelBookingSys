@@ -1,6 +1,7 @@
 ﻿using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Application.UseCases.Customers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBookingSys.API.Controllers;
