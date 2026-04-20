@@ -11,7 +11,7 @@ namespace HotelBookingSys.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/analytics")]
-[Authorize(Roles = "Manager")]
+
 public class AnalyticsController : BaseController
 {
     private readonly GetOccupancyUseCase _getOccupancyUseCase;

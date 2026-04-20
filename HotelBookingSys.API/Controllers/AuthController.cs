@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.DTOs.AuthDtos;
 using HotelBookingSys.Application.UseCases.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBookingSys.API.Controllers;
@@ -28,5 +29,12 @@ public class AuthController : BaseController
     {
         var result = await _loginUseCase.ExecuteAsync(request);
         return ToActionResult(result);
+    }
+
+    [HttpGet("authtest")]
+    [Authorize(Roles = "Manager")]
+    public async Task<ActionResult<string>> Test()
+    {
+        return "API is working!";
     }
 }
