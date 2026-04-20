@@ -28,8 +28,8 @@ public class UpdateReservationUseCaseTests
 
         var result = await useCase.ExecuteAsync(ReservationId, new UpdateReservationDto
         {
-            NewCheckInDate = CheckIn,
-            NewCheckOutDate = CheckOut
+            CheckInDate = CheckIn,
+            CheckOutDate = CheckOut
         });
 
         result.IsFailure.Should().BeTrue();
@@ -50,8 +50,8 @@ public class UpdateReservationUseCaseTests
 
         var result = await useCase.ExecuteAsync(ReservationId, new UpdateReservationDto
         {
-            NewCheckInDate = CheckIn,
-            NewCheckOutDate = CheckOut
+            CheckInDate = CheckIn,
+            CheckOutDate = CheckOut
         });
 
         result.IsFailure.Should().BeTrue();
@@ -77,8 +77,8 @@ public class UpdateReservationUseCaseTests
 
         var result = await useCase.ExecuteAsync(ReservationId, new UpdateReservationDto
         {
-            NewCheckInDate = CheckIn,
-            NewCheckOutDate = CheckOut
+            CheckInDate = CheckIn,
+            CheckOutDate = CheckOut
         });
 
         result.IsFailure.Should().BeTrue();
@@ -106,8 +106,8 @@ public class UpdateReservationUseCaseTests
 
         var result = await useCase.ExecuteAsync(ReservationId, new UpdateReservationDto
         {
-            NewCheckInDate = newCheckIn,
-            NewCheckOutDate = newCheckOut
+            CheckInDate = newCheckIn,
+            CheckOutDate = newCheckOut
         });
 
         result.IsSuccess.Should().BeTrue();
@@ -154,14 +154,14 @@ public class UpdateReservationUseCaseTests
         {
             RoomId = newRoom.Id,
             GuestCount = 2,
-            NewCheckInDate = CheckIn.AddDays(2),
-            NewCheckOutDate = CheckOut.AddDays(2)
+            CheckInDate = CheckIn.AddDays(2),
+            CheckOutDate = CheckOut.AddDays(2)
         };
 
         reservationRepo.Setup(r => r.GetByIdAsync(ReservationId)).ReturnsAsync(reservation);
         roomRepo.Setup(r => r.GetByIdAsync(newRoom.Id)).ReturnsAsync(newRoom);
         reservationRepo
-            .Setup(r => r.GetOverlappingReservationsByRoomIdAsync(newRoom.Id, request.NewCheckInDate!.Value, request.NewCheckOutDate!.Value))
+            .Setup(r => r.GetOverlappingReservationsByRoomIdAsync(newRoom.Id, request.CheckInDate!.Value, request.CheckOutDate!.Value))
             .ReturnsAsync(new List<Reservation>());
 
         var useCase = new UpdateReservationUseCase(reservationRepo.Object, roomRepo.Object);

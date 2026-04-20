@@ -135,13 +135,13 @@ public class ReservationsController : BaseController
     }
 
     /// <summary>
-    /// Updates room, dates and guest count for a reservation.
+    /// Partially updates a reservation.
     /// </summary>
     /// <param name="id"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPut("{id}/dates")]
-    public async Task<ActionResult<ReservationResponseDto>> UpdateReservationDates(Guid id, [FromBody] UpdateReservationDto request)
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<ReservationResponseDto>> UpdateReservation(Guid id, [FromBody] UpdateReservationDto request)
     {
         var result = await _updateReservationUseCase.ExecuteAsync(id, request);
         return ToActionResult(result);

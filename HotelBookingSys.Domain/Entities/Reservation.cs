@@ -157,6 +157,5 @@ public class Reservation : BaseEntity
         SetUpdatedAt();
     }
 
-    
     //TODO: Max occupancy validation?
 }
