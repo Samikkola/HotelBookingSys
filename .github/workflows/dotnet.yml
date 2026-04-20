@@ -109,6 +109,9 @@ jobs:
         fi
       env:
         ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        Jwt__Secret: ${{ secrets.JWT_SECRET }}
+        Jwt__Issuer: hotelbookingsys
+        Jwt__Audience: hotelbookingsys
 
     # Deploy published output to Azure App Service
     - name: Deploy to Azure Web App
