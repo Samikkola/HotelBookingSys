@@ -1,10 +1,10 @@
 ﻿using HotelBookingSys.Application.Common.Result;
+using HotelBookingSys.Application.DTOs.RoomDtos;
+using HotelBookingSys.Application.Mappings.Rooms;
 using HotelBookingSys.Domain.Interfaces;
-using HotelBookingSys.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HotelBookingSys.Application.DTOs.RoomDtos;
 
 namespace HotelBookingSys.Application.UseCases.Rooms;
 
@@ -26,28 +26,8 @@ public class GetAllRoomsUseCase
     {
         var rooms = await _roomRepository.GetAllAsync();
         return Result<IEnumerable<RoomResponseDto>>
-            .Success(rooms.Select(MapToDto)
+            .Success(rooms.Select(RoomMapper.ToResponseDto)
             .OrderBy(r => r.RoomNumber)
             .ToList());
-    }
-
-    private RoomResponseDto MapToDto(Room room)
-    {
-        return new RoomResponseDto
-        {
-            Id = room.Id,
-            RoomNumber = room.RoomNumber,
-            Type = room.Type.ToString(),
-            RoomCapacity = room.RoomCapacity,
-            BasePrice = room.BasePrice,
-
-            Images = room.Images
-            .Select(i => new RoomImageResponseDto
-            {
-                Id = i.Id,
-                Url = i.Url
-            })
-            .ToList()
-        };
     }
 }

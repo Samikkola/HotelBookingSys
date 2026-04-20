@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
+using HotelBookingSys.Application.Mappings.Reservations;
 using HotelBookingSys.Domain.Interfaces;
 
 namespace HotelBookingSys.Application.UseCases.Reservations;
@@ -30,19 +31,6 @@ public class GetReservationByIdUseCase
         if (room == null)
             return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, "Associated room not found.");
 
-        return Result<ReservationResponseDto>.Success(new ReservationResponseDto
-        {
-            Id = reservation.Id,
-            CustomerId = reservation.CustomerId,
-            RoomId = reservation.RoomId,
-            RoomNumber = room.RoomNumber,
-            CheckInDate = reservation.CheckInDate,
-            CheckOutDate = reservation.CheckOutDate,
-            NumberOfGuests = reservation.NumberOfGuests,
-            TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString(),
-            CreatedAt = reservation.CreatedAt,
-            UpdatedAt = reservation.UpdatedAt
-        });
+        return Result<ReservationResponseDto>.Success(ReservationMapper.ToResponseDto(reservation, room.RoomNumber));
     }
 }
