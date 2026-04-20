@@ -3,16 +3,19 @@ using HotelBookingSys.Application.DTOs.CustomerDtos;
 using HotelBookingSys.Application.Mappings.Customers;
 using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace HotelBookingSys.Application.UseCases.Customers;
 
 public class CreateCustomerUseCase
 {
     private readonly ICustomerRepository _customerRepository;
+    private readonly ILogger<CreateCustomerUseCase> _logger;
 
-    public CreateCustomerUseCase(ICustomerRepository customerRepository)
+    public CreateCustomerUseCase(ICustomerRepository customerRepository, ILogger<CreateCustomerUseCase> logger)
     {
         _customerRepository = customerRepository;
+        _logger = logger;
     }
     /// <summary>
     /// Creates a new customer based on the provided DTO. 
@@ -23,10 +26,16 @@ public class CreateCustomerUseCase
     public async Task<Result<CustomerResponseDto>> ExecuteAsync(CreateCustomerDto dto)
     {
         if (await _customerRepository.EmailExistsAsync(dto.Email))
+        {
+            _logger.LogWarning("Duplicate customer attempt with email: {Email}", dto.Email);
             return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this email already exists.");
+        }
 
         if (await _customerRepository.PhoneExistsAsync(dto.PhoneNumber))
+        {
+            _logger.LogWarning("Duplicate customer attempt with phone: {Phone}", dto.PhoneNumber);
             return Result<CustomerResponseDto>.Failure(ErrorCode.Conflict, "A customer with this phone number already exists.");
+        }
 
         Customer customer;
         try
