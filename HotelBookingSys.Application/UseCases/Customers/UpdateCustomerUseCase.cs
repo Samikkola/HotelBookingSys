@@ -1,7 +1,7 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.CustomerDtos;
+using HotelBookingSys.Application.Mappings.Customers;
 using HotelBookingSys.Domain.Interfaces;
-using HotelBookingSys.Domain.Entities;
 
 namespace HotelBookingSys.Application.UseCases.Customers;
 
@@ -43,21 +43,6 @@ public class UpdateCustomerUseCase
 
         await _customerRepository.UpdateAsync(customer);
 
-        return Result<CustomerResponseDto>.Success(MapToDto(customer));
-    }
-
-    private static CustomerResponseDto MapToDto(Customer customer)
-    {
-        return new CustomerResponseDto
-        {
-            Id = customer.Id,
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Email = customer.Email,
-            Phone = customer.PhoneNumber,
-            Notes = customer.Notes ?? string.Empty,
-            CreatedAt = customer.CreatedAt,
-            UpdatedAt = customer.UpdatedAt,
-        };
+        return Result<CustomerResponseDto>.Success(CustomerMapper.ToResponseDto(customer));
     }
 }
