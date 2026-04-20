@@ -1,9 +1,7 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.RoomDtos;
-using HotelBookingSys.Domain.Entities;
+using HotelBookingSys.Application.Mappings.Rooms;
 using HotelBookingSys.Domain.Interfaces;
-using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,30 +39,9 @@ public class GetAvailableRoomsUseCase
         // Return rooms that are not in the bookedRoomIds set, and map to DTOs
         var availableRooms = rooms
             .Where(room => !bookedRoomIds.Contains(room.Id))
-            .Select(MapToDto)
+            .Select(RoomMapper.ToResponseDto)
             .OrderBy(r => r.RoomNumber);
 
         return Result<IEnumerable<RoomResponseDto>>.Success(availableRooms);
-    }
-
-    private RoomResponseDto MapToDto(Room room)
-    {
-        return new RoomResponseDto
-        {
-            Id = room.Id,
-            RoomNumber = room.RoomNumber,
-            RoomCapacity = room.RoomCapacity,
-            Type = room.Type.ToString(),
-            BasePrice = room.BasePrice,
-
-            Images = room.Images
-            .Select(i => new RoomImageResponseDto
-            {
-                Id = i.Id,
-                Url = i.Url,           
-            })
-            .ToList()
-
-        };
     }
 }
