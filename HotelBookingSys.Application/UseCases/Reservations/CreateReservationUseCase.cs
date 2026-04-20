@@ -1,10 +1,9 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
+using HotelBookingSys.Application.Mappings.Reservations;
 using HotelBookingSys.Domain.Interfaces;
 using HotelBookingSys.Domain.Entities;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace HotelBookingSys.Application.UseCases.Reservations;
 
@@ -16,12 +15,18 @@ public class CreateReservationUseCase
     private readonly ICustomerRepository _customerRepository;
     private readonly IRoomRepository _roomRepository;
     private readonly IReservationRepository _reservationRepository;
+    private readonly ILogger<CreateReservationUseCase> _logger;
 
-    public CreateReservationUseCase(ICustomerRepository customerRepository, IRoomRepository roomRepository, IReservationRepository reservationRepository)
+    public CreateReservationUseCase(
+        ICustomerRepository customerRepository,
+        IRoomRepository roomRepository,
+        IReservationRepository reservationRepository,
+        ILogger<CreateReservationUseCase> logger)
     {
         _customerRepository = customerRepository;
         _roomRepository = roomRepository;
         _reservationRepository = reservationRepository;
+        _logger = logger;
     }
 
     /// <summary>
@@ -48,7 +53,15 @@ public class CreateReservationUseCase
             .GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate)
             ?? Array.Empty<Reservation>();
         if (overlappingReservations.Any())
+        {
+            _logger.LogWarning(
+                "Reservation conflict for RoomId: {RoomId} between {Start} and {End}",
+                room.Id,
+                dto.CheckInDate,
+                dto.CheckOutDate);
+
             return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, "Room is already booked for the selected dates.");
+        }
 
         //TODO: Add date validation -> only future dates accepted
 
@@ -56,7 +69,7 @@ public class CreateReservationUseCase
         Reservation reservation;
         try
         {
-            reservation = MapToDomain(dto, room.Id, room.RoomCapacity, room.BasePrice);
+            reservation = ReservationMapper.ToDomain(dto, room.Id, room.RoomCapacity, room.BasePrice);
         }
         catch (ArgumentException ex)//Catch for domain exceptions
         {
@@ -66,33 +79,15 @@ public class CreateReservationUseCase
         {
             return Result<ReservationResponseDto>.Failure(ErrorCode.Conflict, ex.Message);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected failure in {Method}", nameof(ExecuteAsync));
+            return Result<ReservationResponseDto>.Failure(ErrorCode.Unexpected, "An unexpected error occurred.");
+        }
         // Save reservation
         await _reservationRepository.AddAsync(reservation);
 
         //Map to DTO and return
-        return Result<ReservationResponseDto>.Success(MapToDto(reservation, room.RoomNumber));
-    }
-
-    private Reservation MapToDomain(CreateReservationDto dto , Guid roomId, int roomCapacity, decimal basePrice)
-    {
-        return new Reservation(dto.CustomerId, roomId , dto.CheckInDate, dto.CheckOutDate, dto.NumberOfGuests, roomCapacity, basePrice); // TotalPrice will be set in domain
-    }
-
-    private static ReservationResponseDto MapToDto(Reservation reservation, int roomNumber)
-    {
-        return new ReservationResponseDto
-        {
-            Id = reservation.Id,
-            CustomerId = reservation.CustomerId,
-            RoomId = reservation.RoomId,
-            RoomNumber = roomNumber,
-            CheckInDate = reservation.CheckInDate,
-            CheckOutDate = reservation.CheckOutDate,
-            NumberOfGuests = reservation.NumberOfGuests,
-            TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString() ?? string.Empty,
-            CreatedAt = reservation.CreatedAt,
-            UpdatedAt = reservation.UpdatedAt,
-        };
+        return Result<ReservationResponseDto>.Success(ReservationMapper.ToResponseDto(reservation, room.RoomNumber));
     }
 }

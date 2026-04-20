@@ -4,6 +4,7 @@ using HotelBookingSys.Application.UseCases.Analytics;
 using HotelBookingSys.Application.UseCases.Auth;
 using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Application.UseCases.Rooms;
+using HotelBookingSys.API.Middleware;
 using HotelBookingSys.Infrastructure.Data;
 using HotelBookingSys.Infrastructure.DepencyInjection;
 using HotelBookingSys.Infrastructure.Seeders;
@@ -114,6 +115,10 @@ builder.Services.AddScoped<DeleteRoomImageUseCase>();
 
 var app = builder.Build();
 
+// Global exception handling middleware should run first
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+//Swagger to test endpoints also in AZURE
 app.UseSwagger();
 // Enable "Persist Authorization" in Swagger UI to allow users to stay logged in while testing endpoints
 app.UseSwaggerUI(c =>

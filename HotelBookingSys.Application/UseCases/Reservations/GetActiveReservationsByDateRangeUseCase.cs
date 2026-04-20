@@ -1,10 +1,7 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
+using HotelBookingSys.Application.Mappings.Reservations;
 using HotelBookingSys.Domain.Interfaces;
-using HotelBookingSys.Domain.Entities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelBookingSys.Application.UseCases.Reservations;
 
@@ -35,25 +32,10 @@ public class GetActiveReservationsByDateRangeUseCase
         var rooms = await _roomRepository.GetAllAsync();
         var roomsById = rooms.ToDictionary(r => r.Id, r => r.RoomNumber);
 
-        return Result<IEnumerable<ReservationResponseDto>>.Success(reservations.Select(r => MapToDto(r, roomsById)));
-    }
-
-    private static ReservationResponseDto MapToDto(Reservation reservation, IReadOnlyDictionary<Guid, int> rooms)
-    {
-        return new ReservationResponseDto
-        {
-            Id = reservation.Id,
-            CustomerId = reservation.CustomerId,
-            RoomId = reservation.RoomId,
-            RoomNumber = rooms.TryGetValue(reservation.RoomId, out var roomNum) ? roomNum : 0,
-            CheckInDate = reservation.CheckInDate,
-            CheckOutDate = reservation.CheckOutDate,
-            NumberOfGuests = reservation.NumberOfGuests,
-            TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString(),
-            CreatedAt = reservation.CreatedAt,
-            UpdatedAt = reservation.UpdatedAt
-
-        };
+        // Map reservations to DTOs, including room numbers
+        return Result<IEnumerable<ReservationResponseDto>>.Success(
+            reservations.Select(r => ReservationMapper.ToResponseDto(r, roomsById)));
     }
 }
+
+

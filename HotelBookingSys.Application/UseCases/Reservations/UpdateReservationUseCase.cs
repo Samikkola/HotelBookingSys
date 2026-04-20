@@ -1,5 +1,6 @@
 using HotelBookingSys.Application.Common.Result;
 using HotelBookingSys.Application.DTOs.ReservationDtos;
+using HotelBookingSys.Application.Mappings.Reservations;
 using HotelBookingSys.Domain.Interfaces;
 
 namespace HotelBookingSys.Application.UseCases.Reservations;
@@ -29,8 +30,8 @@ public class UpdateReservationUseCase
             return Result<ReservationResponseDto>.Failure(ErrorCode.NotFound, $"Reservation with ID {reservationId} not found.");
 
         var targetRoomId = dto.RoomId ?? reservation.RoomId;
-        var targetCheckIn = dto.NewCheckInDate ?? reservation.CheckInDate;
-        var targetCheckOut = dto.NewCheckOutDate ?? reservation.CheckOutDate;
+        var targetCheckIn = dto.CheckInDate ?? reservation.CheckInDate;
+        var targetCheckOut = dto.CheckOutDate ?? reservation.CheckOutDate;
         var targetGuestCount = dto.GuestCount ?? reservation.NumberOfGuests;
 
         var room = await _roomRepository.GetByIdAsync(targetRoomId);
@@ -65,19 +66,8 @@ public class UpdateReservationUseCase
 
         await _reservationRepository.UpdateAsync(reservation);
 
-        return Result<ReservationResponseDto>.Success(new ReservationResponseDto
-        {
-            Id = reservation.Id,
-            CustomerId = reservation.CustomerId,
-            RoomId = reservation.RoomId,
-            RoomNumber = room.RoomNumber,
-            CheckInDate = reservation.CheckInDate,
-            CheckOutDate = reservation.CheckOutDate,
-            NumberOfGuests = reservation.NumberOfGuests,
-            TotalPrice = reservation.TotalPrice,
-            Status = reservation.Status.ToString(),
-            CreatedAt = reservation.CreatedAt,
-            UpdatedAt = reservation.UpdatedAt
-        });
+
+        return Result<ReservationResponseDto>.Success(ReservationMapper.ToResponseDto(reservation, room.RoomNumber));
+
     }
 }

@@ -5,6 +5,7 @@ using HotelBookingSys.Application.UseCases.Reservations;
 using HotelBookingSys.Domain.Entities;
 using HotelBookingSys.Domain.Enums;
 using HotelBookingSys.Application.Common.Result;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace HotelBookingSys.Tests.Application.Reservations;
@@ -31,10 +32,11 @@ public class CreateReservationUseCaseTests
         var customerRepo = new Mock<ICustomerRepository>();
         var roomRepo = new Mock<IRoomRepository>();
         var reservationRepo = new Mock<IReservationRepository>();
+        var logger = new Mock<ILogger<CreateReservationUseCase>>();
 
         customerRepo.Setup(r => r.GetByIdAsync(CustomerId)).ReturnsAsync((Customer?)null);
 
-        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object);
+        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(dto);
 
@@ -57,11 +59,12 @@ public class CreateReservationUseCaseTests
         var customerRepo = new Mock<ICustomerRepository>();
         var roomRepo = new Mock<IRoomRepository>();
         var reservationRepo = new Mock<IReservationRepository>();
+        var logger = new Mock<ILogger<CreateReservationUseCase>>();
 
         customerRepo.Setup(r => r.GetByIdAsync(CustomerId)).ReturnsAsync(new Customer("Jane", "Doe", "jane@example.com", "123"));
         roomRepo.Setup(r => r.GetByRoomNumberAsync(RoomNumber)).ReturnsAsync((Room?)null);
 
-        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object);
+        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(dto);
         result.Should().NotBeNull();
@@ -84,11 +87,12 @@ public class CreateReservationUseCaseTests
         var customerRepo = new Mock<ICustomerRepository>();
         var roomRepo = new Mock<IRoomRepository>();
         var reservationRepo = new Mock<IReservationRepository>();
+        var logger = new Mock<ILogger<CreateReservationUseCase>>();
 
         customerRepo.Setup(r => r.GetByIdAsync(CustomerId)).ReturnsAsync(new Customer("Jane", "Doe", "jane@example.com", "123"));
         roomRepo.Setup(r => r.GetByRoomNumberAsync(RoomNumber)).ReturnsAsync(new Room(RoomNumber, RoomType.Standard, 2, 100m));
 
-        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object);
+        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(dto);
         result.Should().NotBeNull();
@@ -111,6 +115,7 @@ public class CreateReservationUseCaseTests
         var customerRepo = new Mock<ICustomerRepository>();
         var roomRepo = new Mock<IRoomRepository>();
         var reservationRepo = new Mock<IReservationRepository>();
+        var logger = new Mock<ILogger<CreateReservationUseCase>>();
 
         var customer = new Customer("Jane", "Doe", "jane@example.com", "123");
         var room = new Room(RoomNumber, RoomType.Standard, 2, 100m);
@@ -121,7 +126,7 @@ public class CreateReservationUseCaseTests
         reservationRepo.Setup(r => r.GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate))
             .ReturnsAsync(new List<Reservation> { existingReservation });
 
-        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object);
+        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(dto);
 
@@ -144,6 +149,7 @@ public class CreateReservationUseCaseTests
         var customerRepo = new Mock<ICustomerRepository>();
         var roomRepo = new Mock<IRoomRepository>();
         var reservationRepo = new Mock<IReservationRepository>();
+        var logger = new Mock<ILogger<CreateReservationUseCase>>();
 
         var customer = new Customer("Jane", "Doe", "jane@example.com", "123");
         var room = new Room(RoomNumber, RoomType.Standard, 2, 100m);
@@ -153,7 +159,7 @@ public class CreateReservationUseCaseTests
         reservationRepo.Setup(r => r.GetOverlappingReservationsByRoomIdAsync(room.Id, dto.CheckInDate, dto.CheckOutDate))
             .ReturnsAsync(new List<Reservation>());
 
-        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object);
+        var useCase = new CreateReservationUseCase(customerRepo.Object, roomRepo.Object, reservationRepo.Object, logger.Object);
 
         var result = await useCase.ExecuteAsync(dto);
 
