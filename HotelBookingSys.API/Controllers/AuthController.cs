@@ -32,9 +32,9 @@ public class AuthController : BaseController
     }
 
     [HttpGet("authtest")]
-    [Authorize(Roles = "Manager")]
+    [Authorize]
     public async Task<ActionResult<string>> Test()
     {
-        return "API is working!";
+        return "Auth API is working!";
     }
 }

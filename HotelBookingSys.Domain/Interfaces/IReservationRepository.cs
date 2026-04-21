@@ -70,8 +70,6 @@ public interface IReservationRepository
     /// <returns></returns>
     Task<IReadOnlyList<Reservation>> GetCompletedByYearAsync(int year);
 
-    Task<IReadOnlyList<Reservation>> GetActiveReservationsByDateRangeAsync(DateOnly from, DateOnly to);
-
     /// <summary>
     /// Checks whether customer has active reservations.
     /// </summary>

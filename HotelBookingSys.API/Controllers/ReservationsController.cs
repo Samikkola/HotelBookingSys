@@ -18,7 +18,6 @@ public class ReservationsController : BaseController
     private readonly CreateReservationUseCase _createReservationUseCase;
     private readonly GetReservationsUseCase _getReservationsUseCase;
     private readonly GetReservationByIdUseCase _getReservationByIdUseCase;
-    private readonly GetActiveReservationsByDateRangeUseCase _getActiveReservationsByDateRangeUseCase;
     private readonly CancelReservationUseCase _cancelReservationUseCase;
     private readonly UpdateReservationUseCase _updateReservationUseCase;
     private readonly CompleteReservationUseCase _completeReservationUseCase;
@@ -27,7 +26,6 @@ public class ReservationsController : BaseController
         CreateReservationUseCase createReservationUseCase, 
         GetReservationsUseCase getReservationsUseCase,
         GetReservationByIdUseCase getReservationByIdUseCase,
-        GetActiveReservationsByDateRangeUseCase getActiveReservationsByDateRangeUseCase,
         CancelReservationUseCase cancelReservationUseCase,
         UpdateReservationUseCase updateReservationUseCase,
         CompleteReservationUseCase completeReservationUseCase)
@@ -35,33 +33,9 @@ public class ReservationsController : BaseController
         _createReservationUseCase = createReservationUseCase;
         _getReservationsUseCase = getReservationsUseCase;
         _getReservationByIdUseCase = getReservationByIdUseCase;
-        _getActiveReservationsByDateRangeUseCase = getActiveReservationsByDateRangeUseCase;
         _cancelReservationUseCase = cancelReservationUseCase;
         _updateReservationUseCase = updateReservationUseCase;
         _completeReservationUseCase = completeReservationUseCase;
-    }
-
-    /// <summary>
-    /// Returns active reservations within the given date range.
-    /// </summary>
-    /// <param name="from"></param>
-    /// <param name="to"></param>
-    /// <returns></returns>
-    [HttpGet("active")]
-    public async Task<ActionResult<IEnumerable<ReservationResponseDto>>> GetActiveReservationsByDateRange(
-        [FromQuery] DateOnly? from,
-        [FromQuery] DateOnly? to)
-    {
-        if (!from.HasValue || !to.HasValue)
-        {
-            return ToActionResult(
-                Result<IEnumerable<ReservationResponseDto>>.Failure(
-                    ErrorCode.Validation,
-                    "Both from and to dates are required."));
-        }
-
-        var result = await _getActiveReservationsByDateRangeUseCase.ExecuteAsync(from.Value, to.Value);
-        return ToActionResult(result);
     }
 
     /// <summary>

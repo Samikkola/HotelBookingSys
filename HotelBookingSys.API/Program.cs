@@ -56,6 +56,9 @@ builder.Services.AddSwaggerGen(c =>
 //Add health checks, including a custom check for database connectivity
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>("database");
+
+//Add infrastructure services, including the database context and repositories
+//and dependency injection for use cases
 builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -102,7 +105,6 @@ builder.Services.AddScoped<GetAllRoomsUseCase>();
 builder.Services.AddScoped<GetCustomersUseCase>();
 builder.Services.AddScoped<GetReservationsUseCase>();
 builder.Services.AddScoped<GetReservationByIdUseCase>();
-builder.Services.AddScoped<GetActiveReservationsByDateRangeUseCase>();
 builder.Services.AddScoped<GetAvailableRoomsUseCase>();
 builder.Services.AddScoped<CancelReservationUseCase>();
 builder.Services.AddScoped<UpdateReservationUseCase>();
