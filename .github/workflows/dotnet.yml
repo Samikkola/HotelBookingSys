@@ -61,12 +61,20 @@ jobs:
     - name: Test
       run: dotnet test HotelBookingSys.slnx --no-build --configuration Release --verbosity normal
 
-  # CD job: deploy only after CI passes and relevant changes have been made to the source code and only for direct pushes to master/main
+  # CD job: deploy after CI passes either
+  # 1) automatically on push to master/main when deploy-relevant files changed, or
+  # 2) manually via workflow_dispatch from master/main
   deploy:
     needs: [changes, build-and-test]
-    if: github.event_name == 'push' &&
+    if: |
+      (
+        github.event_name == 'push' &&
         (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
         needs.changes.outputs.deploy_needed == 'true'
+      ) || (
+        github.event_name == 'workflow_dispatch' &&
+        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+      )
     runs-on: ubuntu-latest
 
     steps:

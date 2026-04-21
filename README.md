@@ -57,10 +57,9 @@ HotelBookingSys.slnx
 │   └── workflows/
 ├── HotelBookingSys.API/
 │   ├── Controllers/
-│   ├── HealthChecks/
 │   ├── Middleware/
 │   ├── Properties/
-│   └── Swagger/
+│   
 ├── HotelBookingSys.Application/
 │   ├── Common/
 │   │   └── Result/
@@ -109,8 +108,8 @@ HotelBookingSys.slnx
 - Analytics endpoints (`occupancy`, `revenue`, `popular-room-types`)
 - Room image management (upload/delete) with validation (type + max size)
 - Persistent SQL Server storage via EF Core
-- JWT authentication and role-based authorization
-- Public `/health` endpoint with database connectivity check
+- JWT authentication and role-based authorization (Conflicts with Swagger, so implementation is left out for now)
+- Public `/health` endpoint
 - EF Core migrations and startup seeding
 - Swagger UI for endpoint testing
 - CI/CD with build, test, migration, and Azure deployment stages
@@ -168,7 +167,7 @@ cd HotelBookingSys
 dotnet restore
 ```
 
-## 2) Run with Docker (recommended for local full stack)
+## 2) Run with Docker (recommended for local development)
 
 ### Prerequisites
 - Docker Desktop running
@@ -185,6 +184,7 @@ PowerShell alternative:
 ```powershell
 Copy-Item .env.example .env
 ```
+Change the values in `.env` if needed.
 
 Start containers:
 
@@ -252,40 +252,6 @@ Room image storage strategy:
 
 ---
 
-## 🎯 Arviointiperusteet (Acceptance Criteria Coverage)
-
-### Hyväksytty
-
-- Toimiva REST API huoneiden, asiakkaiden ja varausten hallintaan (CRUD)
-- Päällekkäiset varaukset estetään
-- Vapaat huoneet voi hakea aikavälille
-- Kokonaishinta lasketaan automaattisesti
-- Tiedot tallentuvat tietokantaan pysyvästi
-- API on testattavissa Swaggerin kautta
-
-### Hyvä
-
-- Selkeä arkkitehtuuri ja vastuunjako (Clean Architecture)
-- Syötevalidointi ja virheenkäsittely Result Patternilla
-- Varausten muokkaus toimii (`PATCH /api/reservations/{id}`)
-- Järjestelmä tukee kuvia (upload/delete + URL:t vastauksissa)
-- Tilastot ja raportit (`occupancy`, `revenue`, `popular-room-types`)
-- Yli 15 yksikkötestiä keskeiselle liiketoimintalogiikalle
-- API-dokumentaatio (Swagger/OpenAPI)
-- README sisältää arkkitehtuurin, käynnistysohjeet ja API-käytön
-
-### Kiitettävä
-
-- Sesonkihinnoittelu toteutettu
-- Autentikointi ja auktorisointi (JWT + roolit)
-- Huonekuvien tallennus/hallinta osana kokonaisuutta
-- Yli 25 yksikkötestiä, riippuvuudet mockattu
-- Docker-tuki
-- Siisti, nimetty ja ylläpidettävä rakenne
-- Edistyneet ratkaisut: health check, CI/CD, Azure deploy + migrations
-
----
-
 ## 🚀 CI/CD
 
 Workflow file:
@@ -301,6 +267,8 @@ Required GitHub secrets:
 
 Target App Service:
 - `app-hotelbookingsys`
+
+Check the .github/workflows/dotnet.yml file for the exact pipeline steps and conditions.
 
 ---
 
